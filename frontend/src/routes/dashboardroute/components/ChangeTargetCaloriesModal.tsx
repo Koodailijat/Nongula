@@ -1,10 +1,10 @@
 import { Modal } from '../../../../stories/components/Modal/Modal.tsx';
 import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import { TextField } from '../../../../stories/components/TextField/TextField.tsx';
-import { useTargetCaloriesLocalStorage } from '../../../hooks/usetargetcalorieslocalstorage.tsx';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { RefreshCw } from 'lucide-react';
+import { useTargetCaloriesLocalStorage } from '../../../hooks/useTargetCaloriesLocalStorage.tsx';
 
 interface ChangeTargetCaloriesModalProps {
     isOpen: boolean;

@@ -3,10 +3,10 @@ import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { Modal } from '../../../../stories/components/Modal/Modal.tsx';
 import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import { TextField } from '../../../../stories/components/TextField/TextField.tsx';
-import { useNutritionLocalStorage } from '../../../hooks/usenutritionlocalstorage.tsx';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'react-router';
 import { deepClone } from '../../../utils/deepclone.ts';
+import { useNutritionLocalStorage } from '../../../hooks/useNutritionLocalStorage.tsx';
 
 interface AddNewFoodModalProps {
     isOpen: boolean;

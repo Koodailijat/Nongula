@@ -5,9 +5,9 @@ import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { Modal } from '../../../../stories/components/Modal/Modal.tsx';
 import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import './customcaloriesmodal.scss';
-import { useNutritionLocalStorage } from '../../../hooks/usenutritionlocalstorage.tsx';
 import { useParams } from 'react-router';
 import { deepClone } from '../../../utils/deepclone.ts';
+import { useNutritionLocalStorage } from '../../../hooks/useNutritionLocalStorage.tsx';
 
 interface ModifyCaloriesModalProps {
     isOpen: boolean;

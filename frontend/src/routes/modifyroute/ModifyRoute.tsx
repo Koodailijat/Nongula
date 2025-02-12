@@ -1,8 +1,6 @@
 import { Heading } from '../../../stories/components/Heading/Heading.tsx';
 import { ProgressBar } from '../../../stories/components/ProgressBar/ProgressBar.tsx';
 import { Button } from '../../../stories/components/Button/Button.tsx';
-import { CustomCaloriesModal } from './components/customcaloriesmodal.tsx';
-import { AddNewFoodModal } from './components/addnewfoodmodal.tsx';
 import { Pen, PlusIcon, SearchIcon, Trash } from 'lucide-react';
 import './modifyroute.scss';
 import { useEffect, useState } from 'react';
@@ -12,14 +10,16 @@ import { ListItem } from '../../../stories/components/List/ListItem.tsx';
 import { IconButton } from '../../../stories/components/IconButton/IconButton.tsx';
 import { Text } from '../../../stories/components/Text/Text.tsx';
 import { format, isValid } from 'date-fns';
-import { useDateParamToDate } from '../../hooks/usedateparamtodate.tsx';
-import { useNutritionLocalStorage } from '../../hooks/usenutritionlocalstorage.tsx';
-import { useTargetCaloriesLocalStorage } from '../../hooks/usetargetcalorieslocalstorage.tsx';
 import { deepClone } from '../../utils/deepclone.ts';
-import { ModifyCaloriesModal } from './components/modifycaloriesmodal.tsx';
 import { useNavigate, useParams } from 'react-router';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { useCurrentDayCalories } from '../../hooks/usecurrentdaycalories.tsx';
+import { useDateParamToDate } from '../../hooks/useDateParamToDate.tsx';
+import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
+import { useTargetCaloriesLocalStorage } from '../../hooks/useTargetCaloriesLocalStorage.tsx';
+import { CustomCaloriesModal } from './components/CustomCaloriesModal.tsx';
+import { ModifyCaloriesModal } from './components/ModifyCaloriesModal.tsx';
+import { AddNewFoodModal } from './components/AddNewFoodModal.tsx';
+import { useNutritionLocalStorage } from '../../hooks/useNutritionLocalStorage.tsx';
 
 interface FoodItem {
     id: number;

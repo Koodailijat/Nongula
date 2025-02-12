@@ -1,10 +1,10 @@
 import './_nongula.scss';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
-import { ErrorRoute } from './routes/errorroute/errorroute.tsx';
-import { ModifyRoute } from './routes/modifyroute/modifyroute.tsx';
-import { DashboardRoute } from './routes/dashboardroute/dashboardroute.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ErrorRoute } from './routes/errorroute/ErrorRoute.tsx';
+import { DashboardRoute } from './routes/dashboardroute/DashboardRoute.tsx';
+import { ModifyRoute } from './routes/modifyroute/ModifyRoute.tsx';
 
 // Create a QueryClient instance
 const queryClient = new QueryClient();
