@@ -1,7 +1,8 @@
-import { body, param, validationResult } from 'express-validator';
+import { body, param, validationResult, query } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../utils/prisma.js';
 import createHttpError from 'http-errors';
+import { startOfWeek, endOfWeek } from 'date-fns';
 
 export const addFood = [
     body('date', 'Date must be a valid ISO 8601 date')
@@ -128,6 +129,46 @@ export const getFoodById = [
             return;
         } catch (error) {
             return next(error);
+        }
+    },
+];
+
+export const getWeeklyFoodLogs = [
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(400).json({ errors: errors.array() });
+                return;
+            }
+
+            const userId = req.user.id;
+            const dateString = req.body.date as string;
+            const date = new Date(dateString)
+            console.log(date);
+
+            if (req.user.id !== userId) {
+                res.status(403).json({ message: 'Unauthorized' });
+                return;
+            }
+
+            const weekStart = startOfWeek(date, { weekStartsOn: 1 });
+            const weekEnd = endOfWeek(date, { weekStartsOn: 1 });
+
+            const foodLogs = await prisma.foodLog.findMany({
+                where: {
+                    userId: userId,
+                    date: {
+                        gte: weekStart,
+                        lte: weekEnd,
+                    },
+                },
+                orderBy: { date: 'asc' },
+            });
+            res.status(200).json(foodLogs);
+            return;
+        } catch (error) {
+            next(error);
         }
     },
 ];
