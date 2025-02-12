@@ -145,12 +145,6 @@ export const getWeeklyFoodLogs = [
             const userId = req.user.id;
             const dateString = req.body.date as string;
             const date = new Date(dateString)
-            console.log(date);
-
-            if (req.user.id !== userId) {
-                res.status(403).json({ message: 'Unauthorized' });
-                return;
-            }
 
             const weekStart = startOfWeek(date, { weekStartsOn: 1 });
             const weekEnd = endOfWeek(date, { weekStartsOn: 1 });
