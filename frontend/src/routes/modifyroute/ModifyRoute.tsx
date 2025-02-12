@@ -1,38 +1,31 @@
 import { Heading } from '../../../stories/components/Heading/Heading.tsx';
 import { ProgressBar } from '../../../stories/components/ProgressBar/ProgressBar.tsx';
 import { Button } from '../../../stories/components/Button/Button.tsx';
-import { Pen, PlusIcon, SearchIcon, Trash } from 'lucide-react';
-import './modifyroute.scss';
-import { useEffect, useState } from 'react';
-import { TextField } from '../../../stories/components/TextField/TextField.tsx';
+import { CustomCaloriesModal } from './components/CustomCaloriesModal.tsx';
+import { AddNewFoodModal } from './components/AddNewFoodModal.tsx';
+import { Pen, PlusIcon, Trash } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { List } from '../../../stories/components/List/List.tsx';
 import { ListItem } from '../../../stories/components/List/ListItem.tsx';
 import { IconButton } from '../../../stories/components/IconButton/IconButton.tsx';
 import { Text } from '../../../stories/components/Text/Text.tsx';
 import { format, isValid } from 'date-fns';
-import { deepClone } from '../../utils/deepclone.ts';
-import { useNavigate, useParams } from 'react-router';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useDateParamToDate } from '../../hooks/useDateParamToDate.tsx';
-import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
-import { useTargetCaloriesLocalStorage } from '../../hooks/useTargetCaloriesLocalStorage.tsx';
-import { CustomCaloriesModal } from './components/CustomCaloriesModal.tsx';
-import { ModifyCaloriesModal } from './components/ModifyCaloriesModal.tsx';
-import { AddNewFoodModal } from './components/AddNewFoodModal.tsx';
 import { useNutritionLocalStorage } from '../../hooks/useNutritionLocalStorage.tsx';
-
-interface FoodItem {
-    id: number;
-    name: {
-        fi: string;
-        en: string;
-    };
-    energyKcal: number;
-}
+import { useTargetCaloriesLocalStorage } from '../../hooks/useTargetCaloriesLocalStorage.tsx';
+import { deepClone } from '../../utils/deepclone.ts';
+import { ModifyCaloriesModal } from './components/ModifyCaloriesModal.tsx';
+import { useNavigate, useParams } from 'react-router';
+import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
+import { useFineliQuery } from '../../api/queries/useFineliQuery.tsx';
+import { SearchBar } from '../../../stories/components/SearchBar/SearchBar.tsx';
+import { Item } from '../../types/nutrition.ts';
+import { Key } from 'react-aria-components';
+import './modifyroute.scss';
 
 export function ModifyRoute() {
     const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
-    const [isOpen, setOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isCustomCaloriesOpen, setCustomCaloriesOpen] = useState(false);
     const isoDateString = useParams().date;
     const datetime = useDateParamToDate();
@@ -40,9 +33,11 @@ export function ModifyRoute() {
     const [nutrition, setNutrition] = useNutritionLocalStorage();
     const [id, setId] = useState('');
     const navigate = useNavigate();
-    const [query, setQuery] = useState('');
-    const [selectedItemId, setSelectedItemId] = useState(0);
-    const [selectedItemName, setSelectedItemName] = useState('');
+    const [search, setSearch] = useState('');
+    const [selectedItem, setSelectedItem] = useState<Omit<Item, 'id'>>({
+        calories: 0,
+        name: '',
+    });
     const currentDayCalories = useCurrentDayCalories(dateString, nutrition);
 
     useEffect(() => {
@@ -52,32 +47,30 @@ export function ModifyRoute() {
         }
     }, [datetime, isoDateString, navigate]);
 
-    async function fetchFoodItems(query: string): Promise<FoodItem[]> {
-        const response = await fetch(
-            `https://fineli.fi/fineli/api/v1/foods?q=${query}`
-        );
-        if (!response.ok) {
-            throw new Error('Failed to fetch data');
+    const { data, isFetching } = useFineliQuery(search);
+    const items = useMemo(
+        () =>
+            data
+                ? data.map((item) => ({
+                      id: item.id,
+                      name: item.name.fi,
+                      calories: item.energyKcal,
+                  }))
+                : [],
+        [data]
+    );
+
+    function handleSelection(key: Key | null) {
+        const selectedItem = data
+            ? items.filter((item) => item.id === key)[0]
+            : null;
+        if (selectedItem) {
+            setSelectedItem({
+                name: selectedItem.name,
+                calories: selectedItem.calories,
+            });
+            setIsAddModalOpen(true);
         }
-        const data: FoodItem[] = await response.json();
-        return data.slice(0, 5); // Get the first 5 results
-    }
-
-    const {
-        data: items = [],
-        isLoading,
-        isError,
-    } = useQuery({
-        queryKey: ['foodItems', query],
-        queryFn: () => fetchFoodItems(query),
-        enabled: query.trim() !== '', // Only fetch when query is not empty
-        placeholderData: keepPreviousData, // Keep previous data while fetching new data
-    });
-
-    function handleIconClick(energyKcal: number, selectedItemName: string) {
-        setSelectedItemId(energyKcal); // Set the selected item's id
-        setSelectedItemName(selectedItemName);
-        setOpen(true); // Open the modal
     }
 
     const [targetCalories] = useTargetCaloriesLocalStorage();
@@ -107,48 +100,13 @@ export function ModifyRoute() {
                         valueText={`${currentDayCalories} / ${targetCalories} kcal`}
                     />
                 </div>
-                <TextField
-                    aria-label={'Search'}
-                    iconSide={'left'}
-                    icon={<SearchIcon />}
-                    placeholder={'Search'}
-                    value={query}
-                    onChange={(value) => setQuery(value)}
+                <SearchBar
+                    isLoading={isFetching}
+                    onSelectionChange={handleSelection}
+                    onInputChange={(value) => setSearch(value)}
+                    placeholder="Search"
+                    items={items}
                 />
-                {/* List component to display results */}
-                {isLoading && <Text>Loading...</Text>}
-                {isError && <Text>Error fetching data.</Text>}
-                {items.length > 0 && (
-                    <div className="search-results">
-                        <List className="food-list" items={items}>
-                            {({ id, name, energyKcal }) => (
-                                <ListItem
-                                    className="modify-route__list-item"
-                                    key={id}
-                                    id={id}
-                                    textValue={name.fi}>
-                                    <Text>{name.fi}</Text>
-                                    <div className="modify-route__list-actions">
-                                        <IconButton
-                                            icon={
-                                                <PlusIcon
-                                                    strokeWidth={2}
-                                                    color="green"
-                                                />
-                                            }
-                                            onPress={() => {
-                                                handleIconClick(
-                                                    energyKcal,
-                                                    name.fi
-                                                );
-                                            }}
-                                        />
-                                    </div>
-                                </ListItem>
-                            )}
-                        </List>
-                    </div>
-                )}
                 <List
                     className="modify-route__list"
                     items={nutrition[dateString]}>
@@ -206,10 +164,9 @@ export function ModifyRoute() {
                     setOpen={setIsModifyModalOpen}
                 />
                 <AddNewFoodModal
-                    isOpen={isOpen}
-                    setOpen={setOpen}
-                    itemId={selectedItemId}
-                    name={selectedItemName}
+                    isOpen={isAddModalOpen}
+                    setOpen={setIsAddModalOpen}
+                    item={selectedItem}
                 />
             </div>
         </div>

@@ -6,8 +6,19 @@ import { ErrorRoute } from './routes/errorroute/ErrorRoute.tsx';
 import { DashboardRoute } from './routes/dashboardroute/DashboardRoute.tsx';
 import { ModifyRoute } from './routes/modifyroute/ModifyRoute.tsx';
 
-// Create a QueryClient instance
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            gcTime: 0,
+            retry: 1,
+        },
+        mutations: {
+            gcTime: 0,
+            retry: 1,
+        },
+    },
+});
 
 const root = document.getElementById('root')!;
 
