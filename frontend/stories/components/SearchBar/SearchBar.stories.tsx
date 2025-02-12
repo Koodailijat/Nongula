@@ -18,11 +18,11 @@ export const Default: Story = {
         placeholder: 'Search',
         label: 'Search food items',
         items: [
-            { id: 1, name: '321 calories' },
-            { id: 2, name: '1502 calories' },
-            { id: 3, name: '1259 calories' },
-            { id: 4, name: '2565 calories' },
-            { id: 5, name: '753 calories' },
+            { id: 1, name: 'Chicken' },
+            { id: 2, name: 'Chicken soup' },
+            { id: 3, name: 'Ground beef' },
+            { id: 4, name: 'Spaghetti' },
+            { id: 5, name: 'Fish and chips' },
         ],
     },
 };
