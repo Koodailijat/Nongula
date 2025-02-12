@@ -144,7 +144,7 @@ export const getWeeklyFoodLogs = [
 
             const userId = req.user.id;
             const dateString = req.body.date as string;
-            const date = new Date(dateString)
+            const date = new Date(dateString);
 
             const weekStart = startOfWeek(date, { weekStartsOn: 1 });
             const weekEnd = endOfWeek(date, { weekStartsOn: 1 });
