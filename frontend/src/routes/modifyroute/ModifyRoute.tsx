@@ -17,7 +17,7 @@ import { deepClone } from '../../utils/deepclone.ts';
 import { ModifyCaloriesModal } from './components/ModifyCaloriesModal.tsx';
 import { useNavigate, useParams } from 'react-router';
 import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
-import { useFineliQuery } from '../../api/queries/usefineliquery.tsx';
+import { useFineliQuery } from '../../api/queries/useFineliQuery.tsx';
 import { SearchBar } from '../../../stories/components/SearchBar/SearchBar.tsx';
 import { Item } from '../../types/nutrition.ts';
 import { Key } from 'react-aria-components';
