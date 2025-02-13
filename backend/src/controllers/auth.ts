@@ -43,6 +43,7 @@ export const signup = [
                 data: {
                     email: req.body.email,
                     password: hashedPassword,
+                    target_calories: req.body.target_calories || 2000,
                 },
             });
             res.status(201).json({});
