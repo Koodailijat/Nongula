@@ -51,7 +51,6 @@ export function SearchBar<T extends ListItem>({
     onInputChange,
     ...props
 }: SearchBarProps<T>) {
-    // @ts-expect-error ref won't be null
     const ref: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
     const { width } = useResizeObserver<HTMLDivElement>({ ref });
     const [filterValue, setFilterValue] = useState('');
