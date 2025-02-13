@@ -3,6 +3,7 @@ dotenv.config();
 import express from 'express';
 import passport from 'passport';
 import morgan from 'morgan';
+import cors from 'cors';
 import { jwtStrategy } from './strategies/jwt.js';
 import { router } from './routes/auth.js';
 import { router_food } from './routes/food.js';
@@ -12,6 +13,7 @@ import { errorHandler } from './middlewares/errorhandler.js';
 
 const app = express();
 passport.use(jwtStrategy);
+app.use(cors({ origin: process.env.NODE_ENV === 'development' ? '*' : '' }));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

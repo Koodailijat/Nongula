@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
+import { storageKeys } from '../../constants/storageKeys.ts';
 
 const axiosConfig: CreateAxiosDefaults = {
     baseURL: import.meta.env.VITE_BASEURL,
@@ -12,7 +13,7 @@ const authInstance = axios.create(axiosConfig);
 
 authInstance.interceptors.request.use(
     (axiosRequest) => {
-        const accessToken = localStorage.getItem('token');
+        const accessToken = localStorage.getItem(storageKeys.accessToken);
         if (accessToken) {
             axiosRequest.headers.Authorization = `Bearer ${accessToken}`;
         }
