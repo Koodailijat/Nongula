@@ -17,8 +17,9 @@ model FoodLog {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  email    String    @unique
-  password String
-  foodLogs FoodLog[]
+  id              String    @id @default(uuid())
+  email           String    @unique
+  target_calories Int
+  password        String
+  foodLogs        FoodLog[]
 }
