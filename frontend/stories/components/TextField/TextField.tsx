@@ -2,6 +2,7 @@ import {
     TextField as RATextfield,
     Label as RALabel,
     Input as RAInput,
+    Text,
 } from 'react-aria-components';
 import { AriaTextFieldProps as RATextFieldProps } from '@react-types/textfield';
 import { ReactNode } from 'react';
@@ -13,6 +14,8 @@ export interface TextFieldProps extends RATextFieldProps {
     icon?: ReactNode;
     /** Label **/
     label?: string;
+    /** Error text **/
+    errorText?: string;
 }
 
 function getIconInputStyle(icon: ReactNode, iconSide: 'left' | 'right') {
@@ -31,6 +34,7 @@ export const TextField = ({
     iconSide = 'left',
     icon,
     label,
+    errorText,
     ...props
 }: TextFieldProps) => {
     return (
@@ -49,6 +53,9 @@ export const TextField = ({
                         {icon}
                     </div>
                 )}
+                <Text slot="errorMessage" className="formtextfield-error">
+                    {errorText}
+                </Text>
             </div>
         </RATextfield>
     );

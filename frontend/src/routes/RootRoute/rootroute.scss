@@ -1,0 +1,14 @@
+.root-route {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    justify-self: center;
+    width: 80%;
+}
+
+.root-route__actions {
+    display: flex;
+    gap: 2rem;
+    flex-direction: column;
+    width: 100%;
+}
