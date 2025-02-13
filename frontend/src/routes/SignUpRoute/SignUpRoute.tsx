@@ -6,9 +6,9 @@ import { Form } from 'react-aria-components';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SignUpSchema } from '../../lib/schemas/SignUpSchema.ts';
 import { SignUpInputDto } from '../../types/SignUpDto.ts';
-import { FormTextField } from '../../../stories/components/FormTextField/FormTextField.tsx';
 import { Heading } from '../../../stories/components/Heading/Heading.tsx';
 import { Lock, User } from 'lucide-react';
+import { TextField } from '../../../stories/components/TextField/TextField.tsx';
 
 export function SignUpRoute() {
     const navigate = useNavigate();
@@ -28,13 +28,13 @@ export function SignUpRoute() {
             { ...data },
             { onSuccess: () => navigate('/login') }
         );
-        // onerror toast
+        // TODO: Show toast on error
     };
 
     return (
         <Form className="signupform" onSubmit={handleSubmit(onSubmit)}>
             <Heading level={1}>Sign up</Heading>
-            <FormTextField
+            <TextField
                 placeholder="email"
                 icon={<User />}
                 type="email"
@@ -43,7 +43,7 @@ export function SignUpRoute() {
                 errorText={errors.email?.message}
                 onChange={(email) => setValue('email', email)}
             />
-            <FormTextField
+            <TextField
                 placeholder="Password"
                 icon={<Lock />}
                 type="password"
@@ -52,7 +52,7 @@ export function SignUpRoute() {
                 errorText={errors.password?.message}
                 onChange={(password) => setValue('password', password)}
             />
-            <FormTextField
+            <TextField
                 placeholder="Confirm password"
                 icon={<Lock />}
                 type="password"

@@ -5,10 +5,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from 'react-aria-components';
 import { Heading } from '../../../stories/components/Heading/Heading.tsx';
-import { FormTextField } from '../../../stories/components/FormTextField/FormTextField.tsx';
 import { Lock, User } from 'lucide-react';
 import { LoginSchema } from '../../lib/schemas/LoginSchema.ts';
 import { LoginInputDto } from '../../types/LoginDto.ts';
+import { TextField } from '../../../stories/components/TextField/TextField.tsx';
 
 export function LoginRoute() {
     const {
@@ -32,12 +32,13 @@ export function LoginRoute() {
                 },
             }
         );
+        // TODO: Show toast on error
     };
 
     return (
         <Form className="loginform" onSubmit={handleSubmit(onSubmit)}>
             <Heading level={1}>Login</Heading>
-            <FormTextField
+            <TextField
                 placeholder="Email"
                 icon={<User />}
                 type="email"
@@ -46,7 +47,7 @@ export function LoginRoute() {
                 errorText={errors.email?.message}
                 onChange={(email) => setValue('email', email)}
             />
-            <FormTextField
+            <TextField
                 placeholder="Password"
                 icon={<Lock />}
                 type="password"
