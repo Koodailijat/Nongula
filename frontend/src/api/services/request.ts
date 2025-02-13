@@ -1,11 +1,10 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
 import { storageKeys } from '../../constants/storageKeys.ts';
 
-const axiosConfig = {
+const axiosConfig: CreateAxiosDefaults = {
     baseURL: import.meta.env.VITE_BASEURL,
     headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
     },
 };
 
