@@ -1,14 +1,41 @@
 .root-route {
-    display: flex;
-    flex-direction: column;
-    gap: 4rem;
-    justify-self: center;
-    width: 80%;
-}
+    &__container {
+        display: flex;
+        flex-direction: column;
+    }
 
-.root-route__actions {
-    display: flex;
-    gap: 2rem;
-    flex-direction: column;
-    width: 100%;
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid gray;
+        width: 100%;
+        padding: 8px 16px;
+    }
+
+    &__header-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    &__main-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__content-wrapper {
+        width: clamp(256px, 80%, 450px);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__heading {
+        font-size: 2em;
+    }
+
+    &__text {
+        font-size: 1.1em;
+    }
 }
