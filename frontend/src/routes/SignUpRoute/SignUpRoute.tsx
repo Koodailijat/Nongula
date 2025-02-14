@@ -43,7 +43,6 @@ export function SignUpRoute() {
                 },
             }
         );
-        // TODO: Show toast on error
     };
 
     return (
