@@ -6,6 +6,7 @@ import {
     deleteFood,
     getFoodById,
     getFoodLogsByDateRange,
+    updateFoodLog,
 } from '../controllers/food.js';
 
 router_food.post(
@@ -30,4 +31,10 @@ router_food.get(
     '/foods',
     passport.authenticate('jwt', { session: false }),
     getFoodLogsByDateRange
+);
+
+router_food.put(
+    '/food',
+    passport.authenticate('jwt', { session: false }),
+    updateFoodLog
 );

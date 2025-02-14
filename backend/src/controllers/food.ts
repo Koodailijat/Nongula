@@ -133,6 +133,60 @@ export const getFoodById = [
     },
 ];
 
+export const updateFoodLog = [
+    body('id', 'ID must be a valid UUID')
+        .isUUID()
+        .withMessage('Invalid ID format'),
+    body('calories', 'Calories must be a positive integer')
+        .optional()
+        .isInt({ min: 0 })
+        .withMessage('Invalid calorie value'),
+    body('name', 'Name must be a non-empty string')
+        .optional()
+        .isString()
+        .notEmpty()
+        .withMessage('Invalid name'),
+
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(400).json({ errors: errors.array() });
+                return;
+            }
+
+            const userId = req.user.id;
+            const { id, calories, name } = req.body;
+
+            const foodLog = await prisma.foodLog.findFirst({
+                where: {
+                    id: id,
+                    userId: userId,
+                },
+            });
+
+            if (!foodLog) {
+                res.status(404).json({ message: 'Food log not found' });
+                return;
+            }
+
+            const updatedFoodLog = await prisma.foodLog.update({
+                where: { id: id },
+                data: {
+                    calories:
+                        calories !== undefined ? calories : foodLog.calories,
+                    name: name !== undefined ? name : foodLog.name,
+                },
+            });
+
+            res.status(200).json(updatedFoodLog);
+            return;
+        } catch (error) {
+            return next(error);
+        }
+    },
+];
+
 export const getFoodLogsByDateRange = [
     query('startDate', 'Start date must be in YYYY-MM-DD format')
         .optional()
