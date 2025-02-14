@@ -1,7 +1,12 @@
 import { Router } from 'express';
 import passport from 'passport';
 export const router_food = Router();
-import { addFood, deleteFood, getFoodById } from '../controllers/food.js';
+import {
+    addFood,
+    deleteFood,
+    getFoodById,
+    getFoodLogsByDateRange,
+} from '../controllers/food.js';
 
 router_food.post(
     '/food',
@@ -19,4 +24,10 @@ router_food.get(
     '/food/:id',
     passport.authenticate('jwt', { session: false }),
     getFoodById
+);
+
+router_food.get(
+    '/foods',
+    passport.authenticate('jwt', { session: false }),
+    getFoodLogsByDateRange
 );

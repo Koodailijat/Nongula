@@ -1,7 +1,8 @@
-import { body, param, validationResult } from 'express-validator';
+import { body, param, validationResult, query } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../utils/prisma.js';
 import createHttpError from 'http-errors';
+import { startOfWeek, endOfWeek } from 'date-fns';
 
 export const addFood = [
     body('date', 'Date must be a valid ISO 8601 date')
@@ -125,6 +126,57 @@ export const getFoodById = [
             const { userId: _, ...foodLogData } = foodLog;
 
             res.status(200).json(foodLogData);
+            return;
+        } catch (error) {
+            return next(error);
+        }
+    },
+];
+
+export const getFoodLogsByDateRange = [
+    query('startDate', 'Start date must be in YYYY-MM-DD format')
+        .optional()
+        .isISO8601()
+        .withMessage('Invalid start date format'),
+    query('endDate', 'End date must be in YYYY-MM-DD format')
+        .optional()
+        .isISO8601()
+        .withMessage('Invalid end date format'),
+
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(400).json({ errors: errors.array() });
+                return;
+            }
+
+            const userId = req.user.id;
+            const startDate = req.query.startDate
+                ? new Date(req.query.startDate as string)
+                : undefined;
+            const endDate = req.query.endDate
+                ? new Date(req.query.endDate as string)
+                : undefined;
+
+            const foodLogs = await prisma.foodLog.findMany({
+                where: {
+                    userId: userId,
+                    date: {
+                        gte: startDate,
+                        lte: endDate,
+                    },
+                },
+            });
+
+            if (!foodLogs.length) {
+                res.status(404).json({
+                    message: 'No food logs found for this date range',
+                });
+                return;
+            }
+
+            res.status(200).json(foodLogs);
             return;
         } catch (error) {
             return next(error);
