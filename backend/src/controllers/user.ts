@@ -32,6 +32,31 @@ export const updateTargetCalories = [
     },
 ];
 
+export const getUser = [
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: req.user.id },
+                select: {
+                    id: true,
+                    email: true,
+                    target_calories: true,
+                },
+            });
+
+            if (!user) {
+                next(createHttpError(404, 'User not found'));
+                return;
+            }
+
+            res.status(200).json({ user });
+            return;
+        } catch (error) {
+            return next(error);
+        }
+    },
+];
+
 export const deleteUser = [
     body('email', 'Email must be defined')
         .trim()
