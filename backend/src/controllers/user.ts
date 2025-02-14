@@ -23,6 +23,7 @@ export const updateTargetCalories = [
             const user = await prisma.user.update({
                 where: { id: userId },
                 data: { target_calories },
+                select: { target_calories: true },
             });
 
             res.status(200).json(user);
