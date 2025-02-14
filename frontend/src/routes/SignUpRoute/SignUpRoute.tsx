@@ -9,6 +9,7 @@ import { SignUpInputDto } from '../../types/SignUpDto.ts';
 import { Heading } from '../../../stories/components/Heading/Heading.tsx';
 import { Lock, User } from 'lucide-react';
 import { TextField } from '../../../stories/components/TextField/TextField.tsx';
+import { toastQueue } from '../../../stories/components/Toast/GlobalToastRegion.tsx';
 
 export function SignUpRoute() {
     const navigate = useNavigate();
@@ -26,7 +27,21 @@ export function SignUpRoute() {
     const onSubmit: SubmitHandler<SignUpInputDto> = (data: SignUpInputDto) => {
         signUpMutation.mutate(
             { ...data },
-            { onSuccess: () => navigate('/login') }
+            {
+                onSuccess: () => {
+                    toastQueue.add(
+                        { element: 'Account created', severity: 'success' },
+                        { timeout: 5000 }
+                    );
+                    navigate('/login');
+                },
+                onError: (error) => {
+                    toastQueue.add(
+                        { element: `Error: ${error}`, severity: 'danger' },
+                        { timeout: 5000 }
+                    );
+                },
+            }
         );
         // TODO: Show toast on error
     };

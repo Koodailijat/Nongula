@@ -8,6 +8,7 @@ import { PlusIcon } from 'lucide-react';
 import { useParams } from 'react-router';
 import { deepClone } from '../../../utils/deepclone.ts';
 import { Item } from '../../../types/nutrition.ts';
+import { toastQueue } from '../../../../stories/components/Toast/GlobalToastRegion.tsx';
 
 interface AddNewFoodModalProps {
     isOpen: boolean;
@@ -56,6 +57,11 @@ export function AddNewFoodModal({
         setTotalCalories(0);
         setNutrition(newCalories);
         setOpen(false);
+
+        toastQueue.add(
+            { element: `Food added`, severity: 'success' },
+            { timeout: 5000 }
+        );
     }
 
     return (

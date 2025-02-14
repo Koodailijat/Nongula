@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, CreateAxiosDefaults } from 'axios';
 import { storageKeys } from '../../constants/storageKeys.ts';
 
 const axiosConfig: CreateAxiosDefaults = {
-    baseURL: import.meta.env.VITE_BASEURL,
+    baseURL: 'http://localhost:3000',
     headers: {
         'Content-Type': 'application/json',
     },

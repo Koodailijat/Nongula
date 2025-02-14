@@ -8,6 +8,7 @@ import './customcaloriesmodal.scss';
 import { useParams } from 'react-router';
 import { deepClone } from '../../../utils/deepclone.ts';
 import { useNutritionLocalStorage } from '../../../hooks/useNutritionLocalStorage.tsx';
+import { toastQueue } from '../../../../stories/components/Toast/GlobalToastRegion.tsx';
 
 interface ModifyCaloriesModalProps {
     isOpen: boolean;
@@ -67,6 +68,11 @@ export function ModifyCaloriesModal({
             setCalories(modifiedCalories);
         }
         setOpen(false);
+
+        toastQueue.add(
+            { element: 'Food updated', severity: 'success' },
+            { timeout: 5000 }
+        );
     }
 
     return (

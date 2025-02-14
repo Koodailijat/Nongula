@@ -10,6 +10,7 @@ import { AuthGuard } from './utils/AuthGuard.tsx';
 import { RootRoute } from './routes/RootRoute/RootRoute.tsx';
 import { SignUpRoute } from './routes/SignUpRoute/SignUpRoute.tsx';
 import { LoginRoute } from './routes/LoginRoute/LoginRoute.tsx';
+import { GlobalToastRegion } from '../stories/components/Toast/GlobalToastRegion.tsx';
 
 const root = document.getElementById('root')!;
 
@@ -26,6 +27,7 @@ ReactDOM.createRoot(root).render(
                     <Route path={'/modify/:date'} element={<ModifyRoute />} />
                 </Route>
             </Routes>
+            <GlobalToastRegion />
         </BrowserRouter>
     </QueryClientProvider>
 );

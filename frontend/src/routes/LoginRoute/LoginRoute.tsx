@@ -9,6 +9,7 @@ import { Lock, User } from 'lucide-react';
 import { LoginSchema } from '../../lib/schemas/LoginSchema.ts';
 import { LoginInputDto } from '../../types/LoginDto.ts';
 import { TextField } from '../../../stories/components/TextField/TextField.tsx';
+import { toastQueue } from '../../../stories/components/Toast/GlobalToastRegion.tsx';
 
 export function LoginRoute() {
     const {
@@ -30,9 +31,14 @@ export function LoginRoute() {
                 onSuccess: () => {
                     navigate('/dashboard');
                 },
+                onError: (error) => {
+                    toastQueue.add(
+                        { element: `Error: ${error}`, severity: 'danger' },
+                        { timeout: 5000 }
+                    );
+                },
             }
         );
-        // TODO: Show toast on error
     };
 
     return (
