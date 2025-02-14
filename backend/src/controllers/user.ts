@@ -23,9 +23,35 @@ export const updateTargetCalories = [
             const user = await prisma.user.update({
                 where: { id: userId },
                 data: { target_calories },
+                select: { target_calories: true },
             });
 
             res.status(200).json(user);
+        } catch (error) {
+            return next(error);
+        }
+    },
+];
+
+export const getUser = [
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: req.user.id },
+                select: {
+                    id: true,
+                    email: true,
+                    target_calories: true,
+                },
+            });
+
+            if (!user) {
+                next(createHttpError(404, 'User not found'));
+                return;
+            }
+
+            res.status(200).json({ user });
+            return;
         } catch (error) {
             return next(error);
         }

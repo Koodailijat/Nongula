@@ -1,13 +1,23 @@
 import { Router } from 'express';
 import passport from 'passport';
 export const router_user = Router();
-import { updateTargetCalories, deleteUser } from '../controllers/user.js';
+import {
+    updateTargetCalories,
+    deleteUser,
+    getUser,
+} from '../controllers/user.js';
 import { router } from './auth.js';
 
 router_user.post(
     '/user',
     passport.authenticate('jwt', { session: false }),
     updateTargetCalories
+);
+
+router_user.get(
+    '/user',
+    passport.authenticate('jwt', { session: false }),
+    getUser
 );
 
 router.delete(
