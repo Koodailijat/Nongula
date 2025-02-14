@@ -10,7 +10,9 @@ export function RootRoute() {
     return (
         <div className="root-route__container">
             <div className="root-route__header">
-                <Heading level={1}>Nongula</Heading>
+                <Heading className="root-route__top-heading" level={1}>
+                    Nongula
+                </Heading>
                 <div className="root-route__header-buttons">
                     <Button onPress={() => navigate('/signup')}>Signup</Button>
                     <Button
