@@ -3,23 +3,22 @@ import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { Modal } from '../../../../stories/components/Modal/Modal.tsx';
 import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import { TextField } from '../../../../stories/components/TextField/TextField.tsx';
-import { useNutritionLocalStorage } from '../../../hooks/usenutritionlocalstorage.tsx';
+import { useNutritionLocalStorage } from '../../../hooks/useNutritionLocalStorage.tsx';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'react-router';
 import { deepClone } from '../../../utils/deepclone.ts';
+import { Item } from '../../../types/nutrition.ts';
 
 interface AddNewFoodModalProps {
     isOpen: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
-    itemId: number;
-    name: string;
+    item: Omit<Item, 'id'>;
 }
 
 export function AddNewFoodModal({
     isOpen,
     setOpen,
-    name,
-    itemId,
+    item,
 }: AddNewFoodModalProps) {
     function onChange(nextValue: boolean) {
         setOpen(nextValue);
@@ -28,21 +27,21 @@ export function AddNewFoodModal({
     const [weight, setWeight] = useState(0);
     const datetime = useParams().date!;
     const [totalCalories, setTotalCalories] = useState(0);
-    const [calories, setCalories] = useNutritionLocalStorage();
+    const [nutrition, setNutrition] = useNutritionLocalStorage();
     const [kcal, setKcal] = useState(0);
 
-    const [foodName, setFoodName] = useState(name);
+    const [foodName, setFoodName] = useState(item.name);
 
     useEffect(() => {
-        setFoodName(name);
-    }, [name]);
+        setFoodName(item.name);
+    }, [item.name]);
 
     useEffect(() => {
-        setKcal(Math.round(itemId));
-    }, [itemId]);
+        setKcal(Math.round(item.calories));
+    }, [item.calories]);
 
     function onAdd() {
-        const newCalories = deepClone(calories);
+        const newCalories = deepClone(nutrition);
         const caloriesValue =
             totalCalories === 0 ? kcal * (weight / 100) : totalCalories;
         newCalories[datetime] = newCalories[datetime] || [];
@@ -55,7 +54,7 @@ export function AddNewFoodModal({
         newCalories[datetime].push(newNutritionValue);
 
         setTotalCalories(0);
-        setCalories(newCalories);
+        setNutrition(newCalories);
         setOpen(false);
     }
 

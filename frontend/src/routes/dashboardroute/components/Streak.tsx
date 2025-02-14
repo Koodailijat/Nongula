@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Badge } from '../../../../stories/components/Badge/Badge.tsx';
-import { useTargetCaloriesLocalStorage } from '../../../hooks/usetargetcalorieslocalstorage.tsx';
 import { NutritionData, Item } from '../../../types/nutrition.ts';
+import { useTargetCaloriesLocalStorage } from '../../../hooks/useTargetCaloriesLocalStorage.tsx';
 
 export function Streak() {
     const [streakCount, setStreakCount] = useState<number | null>(null);
