@@ -27,7 +27,7 @@ router_food.get(
 );
 
 router_food.get(
-    '/foods/:startDate/:endDate',
+    '/foods',
     passport.authenticate('jwt', { session: false }),
     getFoodLogsByDateRange
 );

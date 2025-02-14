@@ -135,9 +135,11 @@ export const getFoodById = [
 
 export const getFoodLogsByDateRange = [
     param('startDate', 'Start date must be in YYYY-MM-DD format')
+        .optional()
         .isISO8601()
         .withMessage('Invalid start date format'),
     param('endDate', 'End date must be in YYYY-MM-DD format')
+        .optional()
         .isISO8601()
         .withMessage('Invalid end date format'),
 
@@ -150,14 +152,19 @@ export const getFoodLogsByDateRange = [
             }
 
             const userId = req.user.id;
-            const { startDate, endDate } = req.params;
+            const startDate = req.query.startDate
+                ? new Date(req.query.startDate as string)
+                : undefined;
+            const endDate = req.query.endDate
+                ? new Date(req.query.endDate as string)
+                : undefined;
 
             const foodLogs = await prisma.foodLog.findMany({
                 where: {
                     userId: userId,
                     date: {
-                        gte: new Date(startDate),
-                        lte: new Date(endDate),
+                        gte: startDate,
+                        lte: endDate,
                     },
                 },
             });
