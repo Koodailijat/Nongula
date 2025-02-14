@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { RefreshCw } from 'lucide-react';
 import { useTargetCaloriesLocalStorage } from '../../../hooks/useTargetCaloriesLocalStorage.tsx';
+import { toastQueue } from '../../../../stories/components/Toast/GlobalToastRegion.tsx';
 
 interface ChangeTargetCaloriesModalProps {
     isOpen: boolean;
@@ -30,6 +31,10 @@ export function ChangeTargetCaloriesModal({
         if (Number(value) > 0) {
             setTargetCalories(Number(value));
             setIsOpen(false);
+            toastQueue.add(
+                { element: `Target calories updated!`, severity: 'success' },
+                { timeout: 5000 }
+            );
         }
     }
 
