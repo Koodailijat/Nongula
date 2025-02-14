@@ -133,7 +133,14 @@ export const getFoodById = [
     },
 ];
 
-export const getWeeklyFoodLogs = [
+export const getFoodLogsByDateRange = [
+    param('startDate', 'Start date must be in YYYY-MM-DD format')
+        .isISO8601()
+        .withMessage('Invalid start date format'),
+    param('endDate', 'End date must be in YYYY-MM-DD format')
+        .isISO8601()
+        .withMessage('Invalid end date format'),
+
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const errors = validationResult(req);
@@ -143,26 +150,29 @@ export const getWeeklyFoodLogs = [
             }
 
             const userId = req.user.id;
-            const dateString = req.body.date as string;
-            const date = new Date(dateString);
-
-            const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-            const weekEnd = endOfWeek(date, { weekStartsOn: 1 });
+            const { startDate, endDate } = req.params;
 
             const foodLogs = await prisma.foodLog.findMany({
                 where: {
                     userId: userId,
                     date: {
-                        gte: weekStart,
-                        lte: weekEnd,
+                        gte: new Date(startDate),
+                        lte: new Date(endDate),
                     },
                 },
-                orderBy: { date: 'asc' },
             });
+
+            if (!foodLogs.length) {
+                res.status(404).json({
+                    message: 'No food logs found for this date range',
+                });
+                return;
+            }
+
             res.status(200).json(foodLogs);
             return;
         } catch (error) {
-            next(error);
+            return next(error);
         }
     },
 ];

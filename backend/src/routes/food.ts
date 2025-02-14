@@ -5,7 +5,7 @@ import {
     addFood,
     deleteFood,
     getFoodById,
-    getWeeklyFoodLogs,
+    getFoodLogsByDateRange,
 } from '../controllers/food.js';
 
 router_food.post(
@@ -27,7 +27,7 @@ router_food.get(
 );
 
 router_food.get(
-    '/foods',
+    '/foods/:startDate/:endDate',
     passport.authenticate('jwt', { session: false }),
-    getWeeklyFoodLogs
+    getFoodLogsByDateRange
 );
