@@ -2,7 +2,7 @@ import { Router } from 'express';
 import passport from 'passport';
 export const router_user = Router();
 import { updateTargetCalories, deleteUser } from '../controllers/user.js';
-import { router } from './auth';
+import { router } from './auth.js';
 
 router_user.post(
     '/user',

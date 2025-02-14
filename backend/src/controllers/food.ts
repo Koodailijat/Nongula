@@ -134,11 +134,11 @@ export const getFoodById = [
 ];
 
 export const getFoodLogsByDateRange = [
-    param('startDate', 'Start date must be in YYYY-MM-DD format')
+    query('startDate', 'Start date must be in YYYY-MM-DD format')
         .optional()
         .isISO8601()
         .withMessage('Invalid start date format'),
-    param('endDate', 'End date must be in YYYY-MM-DD format')
+    query('endDate', 'End date must be in YYYY-MM-DD format')
         .optional()
         .isISO8601()
         .withMessage('Invalid end date format'),
