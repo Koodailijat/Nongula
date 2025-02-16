@@ -4,8 +4,11 @@ import { TextField } from '../../../../stories/components/TextField/TextField.ts
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { RefreshCw } from 'lucide-react';
-import { useTargetCaloriesLocalStorage } from '../../../hooks/useTargetCaloriesLocalStorage.tsx';
 import { toastQueue } from '../../../../stories/components/Toast/GlobalToastRegion.tsx';
+import {
+    useUserMutation,
+    useUserQuery,
+} from '../../../api/queries/userQueries.tsx';
 
 interface ChangeTargetCaloriesModalProps {
     isOpen: boolean;
@@ -16,47 +19,66 @@ export function ChangeTargetCaloriesModal({
     isOpen,
     setIsOpen,
 }: ChangeTargetCaloriesModalProps) {
-    const [value, setValue] = useState('');
-    const [targetCalories, setTargetCalories] = useTargetCaloriesLocalStorage();
+    const { data } = useUserQuery();
+    const userMutation = useUserMutation();
+    const [targetCalories, setTargetCalories] = useState('');
 
     useEffect(() => {
-        setValue(targetCalories.toString());
-    }, [targetCalories]);
+        if (data) {
+            setTargetCalories(data.target_calories.toString());
+        }
+    }, [data]);
 
     function onChange(nextValue: boolean) {
         setIsOpen(nextValue);
     }
 
     function handleSubmit() {
-        if (Number(value) > 0) {
-            setTargetCalories(Number(value));
-            setIsOpen(false);
-            toastQueue.add(
-                { element: `Target calories updated!`, severity: 'success' },
-                { timeout: 5000 }
+        if (Number(targetCalories) > 0) {
+            userMutation.mutate(
+                {
+                    target_calories: Number(targetCalories),
+                },
+                {
+                    onSuccess: () => {
+                        setIsOpen(false);
+                        toastQueue.add(
+                            {
+                                element: `Target calories updated!`,
+                                severity: 'success',
+                            },
+                            { timeout: 5000 }
+                        );
+                    },
+                }
             );
         }
     }
 
     return (
-        <Modal ariaLabel="Default modal" isOpen={isOpen} onChange={onChange}>
+        <Modal aria-label="Default modal" isOpen={isOpen} onChange={onChange}>
             <div className="target-modal">
                 <Heading level={2} slot="title">
                     Change target
                 </Heading>
                 <TextField
-                    value={value}
-                    onChange={setValue}
+                    value={targetCalories}
+                    onChange={setTargetCalories}
                     label={'Target calories'}
                     placeholder={'Target calories'}
+                    isDisabled={userMutation.isPending}
                 />
                 <div className="target-modal__buttons">
                     <Button
+                        isPending={userMutation.isPending}
                         onPress={handleSubmit}
                         icon={<RefreshCw color="white" size="16" />}>
                         Update
                     </Button>
-                    <Button variant="danger" onPress={() => setIsOpen(false)}>
+                    <Button
+                        isPending={userMutation.isPending}
+                        variant="danger"
+                        onPress={() => setIsOpen(false)}>
                         Cancel
                     </Button>
                 </div>

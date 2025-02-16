@@ -3,17 +3,15 @@ import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { Modal } from '../../../../stories/components/Modal/Modal.tsx';
 import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import { TextField } from '../../../../stories/components/TextField/TextField.tsx';
-import { useNutritionLocalStorage } from '../../../hooks/useNutritionLocalStorage.tsx';
 import { PlusIcon } from 'lucide-react';
 import { useParams } from 'react-router';
-import { deepClone } from '../../../utils/deepclone.ts';
-import { Item } from '../../../types/nutrition.ts';
-import { toastQueue } from '../../../../stories/components/Toast/GlobalToastRegion.tsx';
+import { useFoodMutation } from '../../../api/queries/foodQueries.tsx';
+import { FoodInputDto } from '../../../types/FoodDto.ts';
 
 interface AddNewFoodModalProps {
     isOpen: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
-    item: Omit<Item, 'id'>;
+    item: Omit<FoodInputDto, 'id' | 'date'>;
 }
 
 export function AddNewFoodModal({
@@ -21,77 +19,69 @@ export function AddNewFoodModal({
     setOpen,
     item,
 }: AddNewFoodModalProps) {
+    const date = useParams().date!;
+    const [calories, setCalories] = useState(item.calories.toString());
+    const [weight, setWeight] = useState('100');
+    const [name, setName] = useState(item.name);
+
+    const foodMutation = useFoodMutation();
+
+    useEffect(() => {
+        setName(item.name);
+    }, [item.name]);
+
+    useEffect(() => {
+        setCalories(Math.round(item.calories).toString());
+    }, [item.calories]);
+
     function onChange(nextValue: boolean) {
         setOpen(nextValue);
     }
 
-    const [weight, setWeight] = useState(0);
-    const datetime = useParams().date!;
-    const [totalCalories, setTotalCalories] = useState(0);
-    const [nutrition, setNutrition] = useNutritionLocalStorage();
-    const [kcal, setKcal] = useState(0);
+    function handleAdd() {
+        const calculatedCalories = Number(calories) * (Number(weight) / 100);
 
-    const [foodName, setFoodName] = useState(item.name);
+        foodMutation.mutate({
+            name,
+            calories: calculatedCalories,
+            date,
+        });
 
-    useEffect(() => {
-        setFoodName(item.name);
-    }, [item.name]);
-
-    useEffect(() => {
-        setKcal(Math.round(item.calories));
-    }, [item.calories]);
-
-    function onAdd() {
-        const newCalories = deepClone(nutrition);
-        const caloriesValue =
-            totalCalories === 0 ? kcal * (weight / 100) : totalCalories;
-        newCalories[datetime] = newCalories[datetime] || [];
-
-        const newNutritionValue = {
-            calories: Math.round(caloriesValue),
-            name: foodName,
-            id: crypto.randomUUID(),
-        };
-        newCalories[datetime].push(newNutritionValue);
-
-        setTotalCalories(0);
-        setNutrition(newCalories);
+        setWeight('100');
         setOpen(false);
-
-        toastQueue.add(
-            { element: `Food added`, severity: 'success' },
-            { timeout: 5000 }
-        );
     }
 
     return (
-        <Modal ariaLabel="AddNewFoodModal" isOpen={isOpen} onChange={onChange}>
+        <Modal
+            aria-label="Add new food modal"
+            isOpen={isOpen}
+            onChange={onChange}>
             <div className="custom-modal">
                 <Heading level={2}>Add chosen food</Heading>
                 <TextField
                     isRequired={true}
                     label="Food name"
                     placeholder="Food name"
-                    onChange={setFoodName}
-                    value={foodName}
+                    onChange={setName}
+                    value={name}
                 />
                 <>
                     <TextField
                         label="Calories (Kcal / 100g)"
                         placeholder="Calories (Kcal / 100g)"
-                        onChange={(value) => setKcal(Number(value))}
-                        isDisabled={true}
-                        value={kcal.toString()}
+                        onChange={(value) => setCalories(value)}
+                        value={calories}
                     />
                     <TextField
                         label="Weight (g)"
                         placeholder="Weight (g)"
-                        onChange={(value) => setWeight(Number(value))}
+                        value={weight}
+                        onChange={(value) => setWeight(value)}
                     />
                 </>
                 <div className="custom-modal__actions">
                     <Button
-                        onPress={onAdd}
+                        onPress={handleAdd}
                         icon={<PlusIcon color="white" size="16" />}>
                         Add
                     </Button>

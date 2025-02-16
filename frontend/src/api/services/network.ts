@@ -15,7 +15,7 @@ authInstance.interceptors.request.use(
     (axiosRequest) => {
         const accessToken = localStorage.getItem(storageKeys.accessToken);
         if (accessToken) {
-            axiosRequest.headers.Authorization = `Bearer ${accessToken}`;
+            axiosRequest.headers.Authorization = `Bearer ${accessToken.split('"')[1]}`;
         }
         return axiosRequest;
     },

@@ -7,9 +7,7 @@ import { Modal } from '../../../../stories/components/Modal/Modal.tsx';
 import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import './customcaloriesmodal.scss';
 import { useParams } from 'react-router';
-import { deepClone } from '../../../utils/deepclone.ts';
-import { useNutritionLocalStorage } from '../../../hooks/useNutritionLocalStorage.tsx';
-import { toastQueue } from '../../../../stories/components/Toast/GlobalToastRegion.tsx';
+import { useFoodMutation } from '../../../api/queries/foodQueries.tsx';
 
 interface CustomCaloriesModalProps {
     isOpen: boolean;
@@ -20,13 +18,12 @@ export function CustomCaloriesModal({
     isOpen,
     setOpen,
 }: CustomCaloriesModalProps) {
-    const [selected, setSelected] = useState(0);
-    const [totalCalories, setTotalCalories] = useState(0);
-    const [kcal, setKcal] = useState(0);
-    const [weight, setWeight] = useState(0);
+    const [selectedSegment, setSelectedSegment] = useState(0);
+    const [totalCalories, setTotalCalories] = useState('0');
+    const [calories, setCalories] = useState('0');
+    const [weight, setWeight] = useState('0');
     const [foodName, setFoodName] = useState('');
-    const [calories, setCalories] = useNutritionLocalStorage();
-    const segments = ['Total', 'Kcal / g'];
+    const foodMutation = useFoodMutation();
     const datetime = useParams().date!;
 
     function onChange(nextValue: boolean) {
@@ -34,34 +31,24 @@ export function CustomCaloriesModal({
     }
 
     function onAdd() {
-        const newCalories = deepClone(calories);
-        const caloriesValue =
-            totalCalories === 0 ? kcal * (weight / 100) : totalCalories;
-        newCalories[datetime] = newCalories[datetime] || [];
+        const calculatedCalories =
+            selectedSegment === 0
+                ? Number(totalCalories)
+                : Number(calories) * (Number(weight) / 100);
 
-        const newNutritionValue = {
-            calories: caloriesValue,
+        foodMutation.mutate({
+            calories: calculatedCalories,
             name: foodName,
-            id: crypto.randomUUID(),
-        };
-        newCalories[datetime].push(newNutritionValue);
-
-        setTotalCalories(0);
-        setCalories(newCalories);
+            date: datetime,
+        });
         setOpen(false);
-
-        toastQueue.add(
-            { element: 'Food added', severity: 'success' },
-            { timeout: 5000 }
-        );
     }
 
     return (
         <Modal
-            ariaLabel="Custom calories modal"
+            aria-label="Custom calories modal"
             isOpen={isOpen}
-            onChange={onChange}
-            aria-label="Custom calories modal">
+            onChange={onChange}>
             <div className="custom-modal" aria-label="Custom calories modal">
                 <Heading level={2} slot="title">
                     Custom calories
@@ -74,29 +61,28 @@ export function CustomCaloriesModal({
                         onChange={setFoodName}
                     />
                     <SegmentedControl
-                        selected={selected}
-                        setSelected={setSelected}
-                        segments={segments}
+                        selected={selectedSegment}
+                        setSelected={setSelectedSegment}
+                        segments={['Total', 'Kcal / g']}
                     />
-                    {selected === 0 ? (
+                    {selectedSegment === 0 ? (
                         <TextField
                             label="Total calories"
                             placeholder="Total calories"
-                            onChange={(value) =>
-                                setTotalCalories(Number(value))
-                            }
+                            onChange={(value) => setTotalCalories(value)}
                         />
                     ) : (
                         <>
                             <TextField
                                 label="Calories (Kcal / 100g)"
                                 placeholder="Calories (Kcal / 100g)"
-                                onChange={(value) => setKcal(Number(value))}
+                                value={calories}
+                                onChange={(value) => setCalories(value)}
                             />
                             <TextField
                                 label="Weight (g)"
                                 placeholder="Weight (g)"
-                                onChange={(value) => setWeight(Number(value))}
+                                onChange={(value) => setWeight(value)}
                             />
                         </>
                     )}

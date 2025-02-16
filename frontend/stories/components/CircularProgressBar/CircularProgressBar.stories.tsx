@@ -22,6 +22,13 @@ export const Default: Story = {
     },
 };
 
+export const Loading: Story = {
+    args: {
+        value: 0,
+        isLoading: true,
+    },
+};
+
 export const WithTargetValue: Story = {
     args: {
         value: 50,

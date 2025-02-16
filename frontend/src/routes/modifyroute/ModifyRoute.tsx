@@ -11,34 +11,54 @@ import { IconButton } from '../../../stories/components/IconButton/IconButton.ts
 import { Text } from '../../../stories/components/Text/Text.tsx';
 import { format, isValid } from 'date-fns';
 import { useDateParamToDate } from '../../hooks/useDateParamToDate.tsx';
-import { useNutritionLocalStorage } from '../../hooks/useNutritionLocalStorage.tsx';
-import { useTargetCaloriesLocalStorage } from '../../hooks/useTargetCaloriesLocalStorage.tsx';
-import { deepClone } from '../../utils/deepclone.ts';
 import { ModifyCaloriesModal } from './components/ModifyCaloriesModal.tsx';
 import { useNavigate, useParams } from 'react-router';
 import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
-import { useFineliQuery } from '../../api/queries/useFineliQuery.tsx';
+import { useFineliQuery } from '../../api/queries/fineliQueries.tsx';
 import { SearchBar } from '../../../stories/components/SearchBar/SearchBar.tsx';
-import { Item } from '../../types/nutrition.ts';
 import { Key } from 'react-aria-components';
 import './modifyroute.scss';
+import {
+    useFoodDeleteMutation,
+    useFoodsQuery,
+} from '../../api/queries/foodQueries.tsx';
+import { useUserQuery } from '../../api/queries/userQueries.tsx';
+import { FoodInputDto } from '../../types/FoodDto.ts';
 
 export function ModifyRoute() {
-    const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
-    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [isCustomCaloriesOpen, setCustomCaloriesOpen] = useState(false);
     const isoDateString = useParams().date;
     const datetime = useDateParamToDate();
-    const dateString = useParams().date!;
-    const [nutrition, setNutrition] = useNutritionLocalStorage();
-    const [id, setId] = useState('');
+    const date = useParams().date!;
     const navigate = useNavigate();
     const [search, setSearch] = useState('');
-    const [selectedItem, setSelectedItem] = useState<Omit<Item, 'id'>>({
+    const [selectedItem, setSelectedItem] = useState<
+        Omit<FoodInputDto, 'id' | 'date'>
+    >({
         calories: 0,
         name: '',
     });
-    const currentDayCalories = useCurrentDayCalories(dateString, nutrition);
+    const [modifyItem, setModifyItem] = useState<Omit<FoodInputDto, 'date'>>({
+        id: '',
+        calories: 0,
+        name: '0',
+    });
+
+    // MODALS
+    const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isCustomCaloriesModalOpen, setIsCustomCaloriesModalOpen] =
+        useState(false);
+
+    // QUERIES
+    const foodsQuery = useFoodsQuery({ startDate: date, endDate: date });
+    const foodDeleteMutation = useFoodDeleteMutation();
+    const fineliQuery = useFineliQuery(search);
+    const userQuery = useUserQuery();
+
+    const currentDayCalories = useCurrentDayCalories(
+        format(datetime, 'yyyy-MM-dd'),
+        foodsQuery.data
+    );
 
     useEffect(() => {
         if (!isValid(datetime)) {
@@ -47,21 +67,20 @@ export function ModifyRoute() {
         }
     }, [datetime, isoDateString, navigate]);
 
-    const { data, isFetching } = useFineliQuery(search);
     const items = useMemo(
         () =>
-            data
-                ? data.map((item) => ({
+            fineliQuery.data
+                ? fineliQuery.data.map((item) => ({
                       id: item.id,
                       name: item.name.fi,
                       calories: item.energyKcal,
                   }))
                 : [],
-        [data]
+        [fineliQuery.data]
     );
 
     function handleSelection(key: Key | null) {
-        const selectedItem = data
+        const selectedItem = fineliQuery.data
             ? items.filter((item) => item.id === key)[0]
             : null;
         if (selectedItem) {
@@ -73,18 +92,12 @@ export function ModifyRoute() {
         }
     }
 
-    const [targetCalories] = useTargetCaloriesLocalStorage();
-
     function onDelete(id: string) {
-        const newNutrition = deepClone(nutrition);
-        newNutrition[dateString] = newNutrition[dateString].filter(
-            (food) => food.id !== id
-        );
-        setNutrition(newNutrition);
+        foodDeleteMutation.mutate({ id });
     }
 
-    function onModifyPress(id: string) {
-        setId(id);
+    function onModifyPress(item: Omit<FoodInputDto, 'date'>) {
+        setModifyItem(item);
         setIsModifyModalOpen(true);
     }
 
@@ -94,14 +107,15 @@ export function ModifyRoute() {
             <div className="modify-route__content">
                 <div className="modify-route__progress-bar">
                     <ProgressBar
+                        isLoading={userQuery.isPending}
                         label={"Today's calories"}
-                        targetValue={targetCalories}
+                        targetValue={Number(userQuery.data?.target_calories)}
                         value={currentDayCalories}
-                        valueText={`${currentDayCalories} / ${targetCalories} kcal`}
+                        valueText={`${currentDayCalories} / ${userQuery.data?.target_calories} kcal`}
                     />
                 </div>
                 <SearchBar
-                    isLoading={isFetching}
+                    isLoading={fineliQuery.isFetching}
                     onSelectionChange={handleSelection}
                     onInputChange={(value) => setSearch(value)}
                     placeholder="Search"
@@ -109,7 +123,7 @@ export function ModifyRoute() {
                 />
                 <List
                     className="modify-route__list"
-                    items={nutrition[dateString]}>
+                    items={foodsQuery.data ? foodsQuery.data : []}>
                     {({ calories, name, id }) => {
                         if (!id) {
                             return null;
@@ -132,7 +146,13 @@ export function ModifyRoute() {
                                 </div>
                                 <div className="modify-route__list-actions">
                                     <IconButton
-                                        onPress={() => onModifyPress(id)}
+                                        onPress={() =>
+                                            onModifyPress({
+                                                id,
+                                                name,
+                                                calories,
+                                            })
+                                        }
                                         icon={<Pen strokeWidth={2} />}
                                     />
                                     <IconButton
@@ -150,16 +170,16 @@ export function ModifyRoute() {
                     }}
                 </List>
                 <Button
-                    onPress={() => setCustomCaloriesOpen(true)}
+                    onPress={() => setIsCustomCaloriesModalOpen(true)}
                     icon={<PlusIcon size="16" />}>
                     Add custom calories
                 </Button>
                 <CustomCaloriesModal
-                    isOpen={isCustomCaloriesOpen}
-                    setOpen={setCustomCaloriesOpen}
+                    isOpen={isCustomCaloriesModalOpen}
+                    setOpen={setIsCustomCaloriesModalOpen}
                 />
                 <ModifyCaloriesModal
-                    foodId={id}
+                    item={modifyItem}
                     isOpen={isModifyModalOpen}
                     setOpen={setIsModifyModalOpen}
                 />

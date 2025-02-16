@@ -69,6 +69,15 @@
             padding: 4px;
             border-radius: 4px;
 
+            &.no-results-found {
+                &:hover {
+                    background: white;
+                    cursor: default;
+                    color: black;
+                    pointer-events: none;
+                }
+            }
+
             &:hover {
                 background: $primary;
                 cursor: pointer;

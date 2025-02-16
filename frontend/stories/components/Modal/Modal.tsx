@@ -26,15 +26,10 @@ interface ModalProps extends ModalOverlayProps {
     /**
      * Aria label for the modal
      */
-    ariaLabel: string;
+    ['aria-label']: string;
 }
 
-export function Modal({
-    children,
-    ariaLabel,
-    size = 'small',
-    ...props
-}: ModalProps) {
+export function Modal({ children, size = 'small', ...props }: ModalProps) {
     function onOpenChange(nextValue: boolean) {
         if (props.onChange) props.onChange(nextValue);
     }
@@ -46,7 +41,7 @@ export function Modal({
             isOpen={props.isOpen}
             onOpenChange={onOpenChange}>
             <RAModal className={`modal modal--${size}`}>
-                <RADialog aria-label={ariaLabel}>
+                <RADialog aria-label={props['aria-label']}>
                     <div className="dialog-container">{children}</div>
                 </RADialog>
             </RAModal>

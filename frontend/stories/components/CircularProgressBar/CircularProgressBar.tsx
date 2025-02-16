@@ -7,6 +7,7 @@ interface CircularProgressBarProps {
     heading?: string;
     /** Target value, use this if you want to use custom target, defaults to 100 **/
     target?: number;
+    isLoading?: boolean;
 }
 
 function getColor(value: number) {
@@ -20,6 +21,7 @@ export function CircularProgressBar({
     value,
     heading,
     target,
+    isLoading,
 }: CircularProgressBarProps) {
     const targetValue = target ?? 100;
     const { progressBarProps } = useProgressBar({
@@ -42,19 +44,21 @@ export function CircularProgressBar({
                 strokeWidth="2rem"
                 stroke="#E1E1E1"
             />
-            <circle
-                r="105"
-                cx="150"
-                cy="150"
-                fill="transparent"
-                stroke={getColor(value / targetValue)}
-                pathLength="100"
-                strokeWidth="1.25rem"
-                strokeDasharray={`${(value / targetValue) * 100} ${100 - (value / targetValue) * 100}`}
-                strokeDashoffset={75}
-                strokeLinecap="round"
-                className="circular-progress-bar__progress"
-            />
+            {!isLoading && (
+                <circle
+                    r="105"
+                    cx="150"
+                    cy="150"
+                    fill="transparent"
+                    stroke={getColor(value / targetValue)}
+                    pathLength="100"
+                    strokeWidth="1.25rem"
+                    strokeDasharray={`${(value / targetValue) * 100} ${100 - (value / targetValue) * 100}`}
+                    strokeDashoffset={75}
+                    strokeLinecap="round"
+                    className="circular-progress-bar__progress"
+                />
+            )}
             <text
                 x="50%"
                 y="38%"
@@ -62,13 +66,15 @@ export function CircularProgressBar({
                 className="circular-progress-bar__text">
                 {heading}
             </text>
-            <text
-                x="50%"
-                y={!heading && target ? '50%' : '52%'}
-                textAnchor="middle"
-                className="circular-progress-bar__text-value">
-                {target ? `${value}` : `${value}%`}
-            </text>
+            {!isLoading && (
+                <text
+                    x="50%"
+                    y={!heading && target ? '50%' : '52%'}
+                    textAnchor="middle"
+                    className="circular-progress-bar__text-value">
+                    {target ? `${value}` : `${value}%`}
+                </text>
+            )}
             <text
                 x="50%"
                 y={!heading && target ? '60%' : '62%'}

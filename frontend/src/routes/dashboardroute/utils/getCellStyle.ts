@@ -1,7 +1,7 @@
 import { CalendarDate } from '@internationalized/date';
-import { NutritionData } from '../../types/nutrition.ts';
 import { CSSProperties } from 'react';
 import { format, isEqual } from 'date-fns';
+import { FoodOutputDto } from '../../../types/FoodDto.ts';
 
 function getColor(value: number) {
     if (value < 0.2) {
@@ -24,7 +24,7 @@ function getColor(value: number) {
 
 export function getCellStyle(
     date: CalendarDate,
-    data: NutritionData,
+    data: FoodOutputDto[],
     targetCalories: number,
     selectedDate: Date
 ): CSSProperties {
@@ -34,17 +34,23 @@ export function getCellStyle(
         format(selectedDate, 'yyyy-MM-dd')
     );
 
-    if (data?.[isoDate]?.length) {
-        return {
-            background: getColor(
-                data[isoDate].reduce(
-                    (previousValue, currentValue) =>
-                        previousValue + currentValue.calories,
-                    0
-                ) / targetCalories
-            ),
-            outline: isSelectedDate ? '4px solid black' : 'none',
-        };
+    if (data) {
+        const currentDayData = data.filter((food) =>
+            isEqual(food.date, isoDate)
+        );
+
+        if (currentDayData.length) {
+            return {
+                background: getColor(
+                    currentDayData.reduce(
+                        (previousValue, currentValue) =>
+                            previousValue + currentValue.calories,
+                        0
+                    ) / targetCalories
+                ),
+                outline: isSelectedDate ? '4px solid black' : 'none',
+            };
+        }
     }
     return { outline: isSelectedDate ? '4px solid black' : 'none' };
 }

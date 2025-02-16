@@ -33,3 +33,22 @@ export const Icon: Story = {
         </div>
     ),
 };
+
+export const Loading: Story = {
+    render: () => (
+        <div style={{ display: 'flex', gap: '16px' }}>
+            <Button isPending={true}>Icon</Button>
+        </div>
+    ),
+};
+
+export const Disabled: Story = {
+    render: () => (
+        <div style={{ display: 'flex', gap: '16px' }}>
+            <Button isDisabled={true}>Icon</Button>
+            <Button isDisabled={true} isPending={true}>
+                Icon
+            </Button>
+        </div>
+    ),
+};

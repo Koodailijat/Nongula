@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar } from './Calendar.tsx';
 import { useNongulaCalendarState } from './useNongulaCalendarState.tsx';
-import { getCellStyle } from '../../../src/routes/dashboardroute/getcellstyle.ts';
+import { getCellStyle } from '../../../src/routes/dashboardroute/utils/getCellStyle.ts';
 
 const meta: Meta<typeof Calendar> = {
     component: Calendar,
