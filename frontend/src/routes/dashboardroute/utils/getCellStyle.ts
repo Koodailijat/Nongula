@@ -24,7 +24,7 @@ function getColor(value: number) {
 
 export function getCellStyle(
     date: CalendarDate,
-    data: FoodOutputDto[],
+    data: Omit<FoodOutputDto, 'userId'>[],
     targetCalories: number,
     selectedDate: Date
 ): CSSProperties {
