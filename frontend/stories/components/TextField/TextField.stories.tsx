@@ -43,3 +43,24 @@ export const Icons: Story = {
         </div>
     ),
 };
+
+export const Disabled: Story = {
+    render: () => (
+        <div style={{ width: '250px' }}>
+            <TextField
+                isDisabled={true}
+                label="Right"
+                placeholder="Right"
+                iconSide="right"
+                icon={<SearchIcon />}
+            />
+            <TextField
+                isDisabled={true}
+                label="Left"
+                placeholder="Left"
+                iconSide="left"
+                icon={<SearchIcon />}
+            />
+        </div>
+    ),
+};

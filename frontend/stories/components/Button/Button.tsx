@@ -1,8 +1,12 @@
 import { ReactNode } from 'react';
-import { Button as RAButton } from 'react-aria-components';
-import { AriaButtonProps as RAButtonProps } from '@react-types/button';
+import {
+    Button as RAButton,
+    ButtonProps as RAButtonProps,
+} from 'react-aria-components';
+import { Spinner } from '../Spinner/Spinner.tsx';
 
 export interface ButtonProps extends RAButtonProps {
+    children?: ReactNode;
     /** Icon as react component */
     icon?: ReactNode;
     /** Button variant */
@@ -21,7 +25,11 @@ export const Button = ({
                 ' '
             )}
             {...props}>
-            {icon}
+            {props.isPending ? (
+                <Spinner fill={props.isDisabled ? 'gray' : 'white'} />
+            ) : (
+                icon
+            )}
             {children}
         </RAButton>
     );

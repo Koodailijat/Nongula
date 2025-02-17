@@ -5,82 +5,50 @@ import { Button } from '../../../../stories/components/Button/Button.tsx';
 import { Modal } from '../../../../stories/components/Modal/Modal.tsx';
 import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import './customcaloriesmodal.scss';
-import { useParams } from 'react-router';
-import { deepClone } from '../../../utils/deepclone.ts';
-import { useNutritionLocalStorage } from '../../../hooks/useNutritionLocalStorage.tsx';
-import { toastQueue } from '../../../../stories/components/Toast/GlobalToastRegion.tsx';
+import { useFoodModifyMutation } from '../../../api/queries/foodQueries.tsx';
+import { FoodInputDto } from '../../../types/FoodDto.ts';
 
 interface ModifyCaloriesModalProps {
     isOpen: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
-    foodId: string;
+    item: Omit<FoodInputDto, 'date'>;
 }
 
 export function ModifyCaloriesModal({
     isOpen,
     setOpen,
-    foodId,
+    item,
 }: ModifyCaloriesModalProps) {
-    const [calories, setCalories] = useNutritionLocalStorage();
-    const [name, setName] = useState('');
-    const [caloriesValue, setCaloriesValue] = useState(0);
-    const datetime = useParams().date!;
+    const [name, setName] = useState(item.name);
+    const [calories, setCalories] = useState(item.calories.toString());
 
     useEffect(() => {
-        const newCalories = deepClone(calories);
-        if (newCalories[datetime]) {
-            const modifiedNutrition = newCalories[datetime].find(
-                (food) => food.id === foodId
-            );
+        setName(item.name);
+    }, [item.name]);
 
-            if (modifiedNutrition) {
-                setName(modifiedNutrition.name);
-                setCaloriesValue(modifiedNutrition.calories);
-            }
-        }
-    }, [calories, datetime, foodId]);
+    useEffect(() => {
+        setCalories(item.calories.toString());
+    }, [item.calories]);
 
+    const foodModifyMutation = useFoodModifyMutation();
     function onChange(nextValue: boolean) {
         setOpen(nextValue);
     }
 
     function onUpdate() {
-        const modifiedCalories = deepClone(calories);
-
-        if (modifiedCalories[datetime]) {
-            modifiedCalories[datetime] = modifiedCalories[datetime].map(
-                (foodItem) => {
-                    if (foodId === foodItem.id) {
-                        return {
-                            ...foodItem,
-                            name: name.trim(),
-                            calories: caloriesValue,
-                        };
-                    }
-                    return foodItem;
-                }
-            );
-            setCalories(modifiedCalories);
-        } else {
-            modifiedCalories[datetime] = [
-                { id: foodId, name: name.trim(), calories: caloriesValue },
-            ];
-            setCalories(modifiedCalories);
-        }
+        foodModifyMutation.mutate({
+            id: item.id,
+            calories: Number(calories),
+            name: name.trim(),
+        });
         setOpen(false);
-
-        toastQueue.add(
-            { element: 'Food updated', severity: 'success' },
-            { timeout: 5000 }
-        );
     }
 
     return (
         <Modal
-            ariaLabel="Edit calories"
+            aria-label="Edit calories modal"
             isOpen={isOpen}
-            onChange={onChange}
-            aria-label="Edit calories modal">
+            onChange={onChange}>
             <div className="modify-modal" aria-label="Edit calories modal">
                 <Heading level={2} slot="title">
                     Edit calories
@@ -94,8 +62,8 @@ export function ModifyCaloriesModal({
                         placeholder="Food name"
                     />
                     <TextField
-                        value={caloriesValue.toString()}
-                        onChange={(text) => setCaloriesValue(Number(text))}
+                        value={calories}
+                        onChange={(text) => setCalories(text)}
                         label={'Total calories'}
                         placeholder={'Input calories'}
                     />

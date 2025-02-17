@@ -1,8 +1,6 @@
 import { body, param, validationResult, query } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../utils/prisma.js';
-import createHttpError from 'http-errors';
-import { startOfWeek, endOfWeek } from 'date-fns';
 
 export const addFood = [
     body('date', 'Date must be a valid ISO 8601 date')
@@ -47,14 +45,7 @@ export const addFood = [
 ];
 
 export const deleteFood = [
-    body('date', 'Date must be a valid ISO 8601 date')
-        .isISO8601()
-        .withMessage('Invalid date format'),
-    body('name', 'Name must be provided and cannot be empty')
-        .trim()
-        .isLength({ min: 1 })
-        .escape(),
-
+    param('id', 'Invalid id').isString().isLength({ min: 1 }),
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const errors = validationResult(req);
@@ -63,26 +54,10 @@ export const deleteFood = [
                 return;
             }
 
-            const userId = req.user.id;
-
-            const { date, name } = req.body;
-
-            const foodLog = await prisma.foodLog.findFirst({
-                where: {
-                    date: date,
-                    name: name,
-                    userId: userId,
-                },
-            });
-
-            if (!foodLog) {
-                res.status(404).json({ message: 'Food log not found' });
-                return;
-            }
-
             await prisma.foodLog.delete({
                 where: {
-                    id: foodLog.id,
+                    id: req.params.id,
+                    userId: req.user.id,
                 },
             });
 

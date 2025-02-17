@@ -105,7 +105,7 @@ export function SearchBar<T extends ListItem>({
                     </RAListBox>
                 ) : (
                     <RAListBox className="search-bar__list-box">
-                        <RAListBoxItem className="search-bar__list-box-item">
+                        <RAListBoxItem className="search-bar__list-box-item no-results-found">
                             <EyeOff />
                             <span>No results found</span>
                         </RAListBoxItem>

@@ -36,3 +36,18 @@ export const WithPercentage: Story = {
         );
     },
 };
+
+export const Loading: Story = {
+    render: () => {
+        return (
+            <div style={{ width: '250px' }}>
+                <ProgressBar
+                    isLoading={true}
+                    label={"Today's calories"}
+                    value={65}
+                    valueText={'1722 kcal'}
+                />
+            </div>
+        );
+    },
+};

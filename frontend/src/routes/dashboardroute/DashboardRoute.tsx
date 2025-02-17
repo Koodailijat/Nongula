@@ -8,26 +8,36 @@ import { format, formatISO } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { useNongulaCalendarState } from '../../../stories/components/Calendar/useNongulaCalendarState.tsx';
 import { useSelectedDate } from '../../../stories/components/Calendar/useSelectedDate.tsx';
-import { getCellStyle } from './getcellstyle.ts';
-
-import { useNutritionLocalStorage } from '../../hooks/useNutritionLocalStorage.tsx';
-import { useTargetCaloriesLocalStorage } from '../../hooks/useTargetCaloriesLocalStorage.tsx';
-import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
 import { Streak } from './components/Streak.tsx';
 import { ChangeTargetCaloriesModal } from './components/ChangeTargetCaloriesModal.tsx';
+import { useUserQuery } from '../../api/queries/userQueries.tsx';
+import { useFoodsQuery } from '../../api/queries/foodQueries.tsx';
+import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
+import { getVisibleRange } from './utils/getVisibleRange.ts';
+import { CustomCalendarCell } from './components/CustomCalendarCell.tsx';
 
 export function DashboardRoute() {
     const navigate = useNavigate();
-    const [isOpen, setIsOpen] = useState(false);
-    const [state, locale] = useNongulaCalendarState();
-    const selectedDate = useSelectedDate(state);
+    const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
+    const [calendarState, locale] = useNongulaCalendarState();
+    const selectedDate = useSelectedDate(calendarState);
     const ISODate = useMemo(
         () => formatISO(selectedDate.toString(), { representation: 'date' }),
         [selectedDate]
     );
-    const [nutrition] = useNutritionLocalStorage();
-    const [targetCalories] = useTargetCaloriesLocalStorage();
-    const currentDayCalories = useCurrentDayCalories(ISODate, nutrition);
+    const userQuery = useUserQuery();
+    const foodsQuery = useFoodsQuery(
+        getVisibleRange(calendarState.visibleRange)
+    );
+    const currentDayCalories = useCurrentDayCalories(ISODate, foodsQuery.data);
+
+    const targetCalories = useMemo(
+        () =>
+            userQuery.data?.target_calories
+                ? userQuery.data.target_calories
+                : 0,
+        [userQuery.data]
+    );
 
     return (
         <div className="dashboard">
@@ -39,28 +49,41 @@ export function DashboardRoute() {
                 <CircularProgressBar
                     value={currentDayCalories}
                     heading="Calories"
+                    isLoading={userQuery.isLoading}
                     target={targetCalories}
                 />
                 <Calendar
-                    data={nutrition}
-                    targetCalories={targetCalories}
-                    state={state}
+                    data={foodsQuery.data ? foodsQuery.data : []}
+                    state={calendarState}
                     locale={locale.locale}
-                    firstDayOfWeek="mon"
-                    cellStyleFn={getCellStyle}
-                />
+                    firstDayOfWeek="mon">
+                    {({ data, date, state, key }) => (
+                        <CustomCalendarCell
+                            data={data}
+                            date={date}
+                            state={state}
+                            target={targetCalories}
+                            key={key}
+                        />
+                    )}
+                </Calendar>
                 <div className="dashboard__button-container">
                     <Button
                         onPress={() => navigate(`/modify/${ISODate}`)}
                         icon={<PlusIcon size="16" />}>
                         Add calories
                     </Button>
-                    <Button variant="secondary" onPress={() => setIsOpen(true)}>
+                    <Button
+                        variant="secondary"
+                        onPress={() => setIsTargetModalOpen(true)}>
                         Change target
                     </Button>
                 </div>
             </div>
-            <ChangeTargetCaloriesModal isOpen={isOpen} setIsOpen={setIsOpen} />
+            <ChangeTargetCaloriesModal
+                isOpen={isTargetModalOpen}
+                setIsOpen={setIsTargetModalOpen}
+            />
         </div>
     );
 }

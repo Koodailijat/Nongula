@@ -18,6 +18,7 @@ interface ProgressBarProps {
     targetValue?: number;
     value: number;
     valueText: string;
+    isLoading?: boolean;
 }
 
 /** Primary UI component for progress bar */
@@ -26,20 +27,25 @@ export const ProgressBar = ({
     value,
     targetValue,
     valueText,
+    isLoading,
 }: ProgressBarProps) => {
     const target = targetValue ?? 100;
     return (
         <RAProgressBar value={value} className="progress-bar">
             <RALabel>{label}</RALabel>
-            <span className="progress-bar__value">{valueText}</span>
+            {!isLoading && (
+                <span className="progress-bar__value">{valueText}</span>
+            )}
             <div className="progress-bar__bar">
-                <div
-                    className="progress-bar__bar-fill"
-                    style={{
-                        width: (value / target) * 100 + '%',
-                        background: getColor(value / target),
-                    }}
-                />
+                {!isLoading && (
+                    <div
+                        className="progress-bar__bar-fill"
+                        style={{
+                            width: (value / target) * 100 + '%',
+                            background: getColor(value / target),
+                        }}
+                    />
+                )}
             </div>
         </RAProgressBar>
     );

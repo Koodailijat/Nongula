@@ -1,5 +1,5 @@
 import { mutationKeys } from '../../constants/mutationKeys.ts';
-import { loginRequest, signUpRequest } from '../services/authRequest.ts';
+import { loginRequest, signUpRequest } from '../services/authService.ts';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthLocalStorage } from '../../hooks/useAuthLocalStorage.tsx';
 

@@ -10,6 +10,12 @@
     flex-direction: column;
     justify-content: flex-end;
     width: 100%;
+
+    &[data-disabled] {
+        color: #4a5568;
+        opacity: 0.5;
+        cursor: default;
+    }
 }
 
 .input-container {
@@ -26,6 +32,13 @@
     border-radius: 8px;
     padding: 10px;
     width: 100%;
+
+    &[data-disabled] {
+        background-color: #e2e8f0;
+        color: #4a5568;
+        opacity: 0.5;
+        cursor: default;
+    }
 
     &.icon-left {
         padding-left: 3rem;

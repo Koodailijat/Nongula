@@ -50,7 +50,7 @@ export const getUser = [
                 return;
             }
 
-            res.status(200).json({ user });
+            res.status(200).json(user);
             return;
         } catch (error) {
             return next(error);
