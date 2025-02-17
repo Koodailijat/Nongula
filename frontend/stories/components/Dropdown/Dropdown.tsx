@@ -1,5 +1,4 @@
 import {
-    Input as RAInput,
     Label as RALabel,
     ListBox as RAListBox,
     ListBoxItem as RAListBoxItem,
@@ -9,8 +8,7 @@ import {
     SelectValue as RASelectValue,
 } from 'react-aria-components';
 import { AriaSelectProps as RASelectProps } from '@react-types/select';
-import { EyeOff, SearchIcon } from 'lucide-react';
-import { RefObject, useMemo, useRef, useState } from 'react';
+import { RefObject, useRef } from 'react';
 import { useResizeObserver } from 'usehooks-ts';
 
 interface ListItem {
