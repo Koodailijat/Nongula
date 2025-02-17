@@ -8,34 +8,26 @@ import { format, formatISO } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { useNongulaCalendarState } from '../../../stories/components/Calendar/useNongulaCalendarState.tsx';
 import { useSelectedDate } from '../../../stories/components/Calendar/useSelectedDate.tsx';
-import { getCellStyle } from './utils/getCellStyle.ts';
 import { Streak } from './components/Streak.tsx';
 import { ChangeTargetCaloriesModal } from './components/ChangeTargetCaloriesModal.tsx';
 import { useUserQuery } from '../../api/queries/userQueries.tsx';
 import { useFoodsQuery } from '../../api/queries/foodQueries.tsx';
 import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
 import { getVisibleRange } from './utils/getVisibleRange.ts';
+import { CustomCalendarCell } from './components/CustomCalendarCell.tsx';
 
 export function DashboardRoute() {
     const navigate = useNavigate();
     const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
     const [calendarState, locale] = useNongulaCalendarState();
     const selectedDate = useSelectedDate(calendarState);
-    const ISODate = useMemo(
-        () => formatISO(selectedDate.toString(), { representation: 'date' }),
-        [selectedDate]
-    );
+    const ISODate = useMemo(() => formatISO(selectedDate.toString(), { representation: 'date' }), [selectedDate]);
     const userQuery = useUserQuery();
-    const foodsQuery = useFoodsQuery(
-        getVisibleRange(calendarState.visibleRange)
-    );
+    const foodsQuery = useFoodsQuery(getVisibleRange(calendarState.visibleRange));
     const currentDayCalories = useCurrentDayCalories(ISODate, foodsQuery.data);
 
     const targetCalories = useMemo(
-        () =>
-            userQuery.data?.target_calories
-                ? userQuery.data.target_calories
-                : 0,
+        () => (userQuery.data?.target_calories ? userQuery.data.target_calories : 0),
         [userQuery.data]
     );
 
@@ -54,29 +46,23 @@ export function DashboardRoute() {
                 />
                 <Calendar
                     data={foodsQuery.data ? foodsQuery.data : []}
-                    targetCalories={targetCalories}
                     state={calendarState}
                     locale={locale.locale}
-                    firstDayOfWeek="mon"
-                    cellStyleFn={getCellStyle}
-                />
+                    firstDayOfWeek="mon">
+                    {({ data, date, state, key }) => (
+                        <CustomCalendarCell data={data} date={date} state={state} target={targetCalories} key={key} />
+                    )}
+                </Calendar>
                 <div className="dashboard__button-container">
-                    <Button
-                        onPress={() => navigate(`/modify/${ISODate}`)}
-                        icon={<PlusIcon size="16" />}>
+                    <Button onPress={() => navigate(`/modify/${ISODate}`)} icon={<PlusIcon size="16" />}>
                         Add calories
                     </Button>
-                    <Button
-                        variant="secondary"
-                        onPress={() => setIsTargetModalOpen(true)}>
+                    <Button variant="secondary" onPress={() => setIsTargetModalOpen(true)}>
                         Change target
                     </Button>
                 </div>
             </div>
-            <ChangeTargetCaloriesModal
-                isOpen={isTargetModalOpen}
-                setIsOpen={setIsTargetModalOpen}
-            />
+            <ChangeTargetCaloriesModal isOpen={isTargetModalOpen} setIsOpen={setIsTargetModalOpen} />
         </div>
     );
 }

@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Calendar } from './Calendar.tsx';
+import { Calendar, CalendarCellProps } from './Calendar.tsx';
 import { useNongulaCalendarState } from './useNongulaCalendarState.tsx';
 import { getCellStyle } from '../../../src/routes/dashboardroute/utils/getCellStyle.ts';
+import { useMemo, useRef } from 'react';
+import { useCalendarCell } from 'react-aria';
+import { isEqual } from 'date-fns';
+import { FoodOutputDto } from '../../../src/types/FoodDto.ts';
 
 const meta: Meta<typeof Calendar> = {
     component: Calendar,
@@ -10,6 +14,44 @@ const meta: Meta<typeof Calendar> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+interface ExampleCalendarCellProps<T> extends CalendarCellProps<T> {
+    target: number;
+}
+
+function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
+    state,
+    date,
+    data,
+    target,
+}: ExampleCalendarCellProps<T>) {
+    const ref = useRef(null);
+    const { cellProps, buttonProps, isSelected, isOutsideVisibleRange, isDisabled, isUnavailable, formattedDate } =
+        useCalendarCell({ date }, state, ref);
+
+    const targetRatio = useMemo(
+        () =>
+            data
+                .filter((food) => isEqual(food.date, date.toString()))
+                .reduce((previousValue, currentValue) => previousValue + currentValue.calories, 0) / target,
+        [data, date, target]
+    );
+
+    return (
+        <td {...cellProps}>
+            <div
+                {...buttonProps}
+                ref={ref}
+                hidden={isOutsideVisibleRange}
+                className={`calendar-cell ${isSelected ? 'selected' : ''} ${
+                    isDisabled ? 'disabled' : ''
+                } ${isUnavailable ? 'unavailable' : ''}`}
+                style={getCellStyle(targetRatio, isSelected)}>
+                {formattedDate}
+            </div>
+        </td>
+    );
+}
 
 export const Default: Story = {
     render: () => {
@@ -50,10 +92,11 @@ export const Default: Story = {
                     { date: '2025-01-30', calories: 3100, name: 'Casserole', id: '29' },
                 ]}
                 state={state}
-                locale={locale.locale}
-                targetCalories={2150}
-                cellStyleFn={getCellStyle}
-            />
+                locale={locale.locale}>
+                {({ data, date, state, key }) => (
+                    <ExampleCalendarCell data={data} date={date} state={state} target={2150} key={key} />
+                )}
+            </Calendar>
         );
     },
 };

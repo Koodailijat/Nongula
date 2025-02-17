@@ -3,76 +3,31 @@ import {
     Heading as RAHeading,
     CalendarProps as RACalendarProps,
     CalendarCellProps as RACalendarCellProps,
+    Key,
 } from 'react-aria-components';
-import { useCalendar, useCalendarCell, useCalendarGrid } from 'react-aria';
-import { CalendarDate, getWeeksInMonth } from '@internationalized/date';
-import { CSSProperties, useRef } from 'react';
+import { useCalendar, useCalendarGrid } from 'react-aria';
+import { getWeeksInMonth } from '@internationalized/date';
+import { ReactNode } from 'react';
 import { CalendarState } from 'react-stately';
 import { DateValue } from '@react-types/datepicker';
-import { useSelectedDate } from './useSelectedDate.tsx';
 
-interface CalendarCellProps extends RACalendarCellProps {
+export interface CalendarCellProps<T> extends RACalendarCellProps {
     state: CalendarState;
+    key: Key;
+    data: T[];
 }
 
-function CalendarCell({ state, date, style }: CalendarCellProps) {
-    const ref = useRef(null);
-    const {
-        cellProps,
-        buttonProps,
-        isSelected,
-        isOutsideVisibleRange,
-        isDisabled,
-        isUnavailable,
-        formattedDate,
-    } = useCalendarCell({ date }, state, ref);
-
-    return (
-        <td {...cellProps}>
-            <div
-                {...buttonProps}
-                ref={ref}
-                hidden={isOutsideVisibleRange}
-                className={`calendar-cell ${isSelected ? 'selected' : ''} ${
-                    isDisabled ? 'disabled' : ''
-                } ${isUnavailable ? 'unavailable' : ''}`}
-                style={{ ...style }}>
-                {formattedDate}
-            </div>
-        </td>
-    );
-}
-
-interface CalendarProps<TData> extends RACalendarProps<DateValue> {
-    data: TData;
-    targetCalories: number;
+interface CalendarProps<TData> extends Omit<RACalendarProps<DateValue>, 'children'> {
+    data: TData[];
     state: CalendarState;
     locale: string;
-    cellStyleFn: (
-        date: CalendarDate,
-        data: TData,
-        targetCalories: number,
-        selectedDate: Date
-    ) => CSSProperties;
+    children: (props: CalendarCellProps<TData>) => ReactNode;
 }
 
-export function Calendar<TData>({
-    data,
-    state,
-    locale,
-    targetCalories,
-    cellStyleFn,
-    ...props
-}: CalendarProps<TData>) {
-    const selectedDate = useSelectedDate(state);
-    const { calendarProps, prevButtonProps, nextButtonProps, title } =
-        useCalendar(props, state);
+export function Calendar<TData>({ data, state, locale, children, ...props }: CalendarProps<TData>) {
+    const { calendarProps, prevButtonProps, nextButtonProps, title } = useCalendar(props, state);
     const { gridProps, headerProps, weekDays } = useCalendarGrid(props, state);
-    const weeksInMonth = getWeeksInMonth(
-        state.visibleRange.start,
-        locale,
-        props.firstDayOfWeek
-    );
+    const weeksInMonth = getWeeksInMonth(state.visibleRange.start, locale, props.firstDayOfWeek);
 
     return (
         <div {...calendarProps} className="calendar">
@@ -96,25 +51,18 @@ export function Calendar<TData>({
                 <tbody>
                     {[...new Array(weeksInMonth).keys()].map((weekIndex) => (
                         <tr key={weekIndex}>
-                            {state
-                                .getDatesInWeek(weekIndex)
-                                .map((date, i) =>
-                                    date ? (
-                                        <CalendarCell
-                                            key={i}
-                                            state={state}
-                                            date={date}
-                                            style={cellStyleFn(
-                                                date,
-                                                data,
-                                                targetCalories,
-                                                selectedDate
-                                            )}
-                                        />
-                                    ) : (
-                                        <td key={i} />
-                                    )
-                                )}
+                            {state.getDatesInWeek(weekIndex).map((date, i) =>
+                                date ? (
+                                    children({
+                                        key: date.toString(),
+                                        state,
+                                        date,
+                                        data,
+                                    })
+                                ) : (
+                                    <td key={i} />
+                                )
+                            )}
                         </tr>
                     ))}
                 </tbody>
