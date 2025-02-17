@@ -17,17 +17,29 @@ export interface CalendarCellProps<T> extends RACalendarCellProps {
     data: T[];
 }
 
-interface CalendarProps<TData> extends Omit<RACalendarProps<DateValue>, 'children'> {
+interface CalendarProps<TData>
+    extends Omit<RACalendarProps<DateValue>, 'children'> {
     data: TData[];
     state: CalendarState;
     locale: string;
     children: (props: CalendarCellProps<TData>) => ReactNode;
 }
 
-export function Calendar<TData>({ data, state, locale, children, ...props }: CalendarProps<TData>) {
-    const { calendarProps, prevButtonProps, nextButtonProps, title } = useCalendar(props, state);
+export function Calendar<TData>({
+    data,
+    state,
+    locale,
+    children,
+    ...props
+}: CalendarProps<TData>) {
+    const { calendarProps, prevButtonProps, nextButtonProps, title } =
+        useCalendar(props, state);
     const { gridProps, headerProps, weekDays } = useCalendarGrid(props, state);
-    const weeksInMonth = getWeeksInMonth(state.visibleRange.start, locale, props.firstDayOfWeek);
+    const weeksInMonth = getWeeksInMonth(
+        state.visibleRange.start,
+        locale,
+        props.firstDayOfWeek
+    );
 
     return (
         <div {...calendarProps} className="calendar">

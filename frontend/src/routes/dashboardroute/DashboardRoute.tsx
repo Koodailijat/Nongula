@@ -21,13 +21,21 @@ export function DashboardRoute() {
     const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
     const [calendarState, locale] = useNongulaCalendarState();
     const selectedDate = useSelectedDate(calendarState);
-    const ISODate = useMemo(() => formatISO(selectedDate.toString(), { representation: 'date' }), [selectedDate]);
+    const ISODate = useMemo(
+        () => formatISO(selectedDate.toString(), { representation: 'date' }),
+        [selectedDate]
+    );
     const userQuery = useUserQuery();
-    const foodsQuery = useFoodsQuery(getVisibleRange(calendarState.visibleRange));
+    const foodsQuery = useFoodsQuery(
+        getVisibleRange(calendarState.visibleRange)
+    );
     const currentDayCalories = useCurrentDayCalories(ISODate, foodsQuery.data);
 
     const targetCalories = useMemo(
-        () => (userQuery.data?.target_calories ? userQuery.data.target_calories : 0),
+        () =>
+            userQuery.data?.target_calories
+                ? userQuery.data.target_calories
+                : 0,
         [userQuery.data]
     );
 
@@ -50,19 +58,32 @@ export function DashboardRoute() {
                     locale={locale.locale}
                     firstDayOfWeek="mon">
                     {({ data, date, state, key }) => (
-                        <CustomCalendarCell data={data} date={date} state={state} target={targetCalories} key={key} />
+                        <CustomCalendarCell
+                            data={data}
+                            date={date}
+                            state={state}
+                            target={targetCalories}
+                            key={key}
+                        />
                     )}
                 </Calendar>
                 <div className="dashboard__button-container">
-                    <Button onPress={() => navigate(`/modify/${ISODate}`)} icon={<PlusIcon size="16" />}>
+                    <Button
+                        onPress={() => navigate(`/modify/${ISODate}`)}
+                        icon={<PlusIcon size="16" />}>
                         Add calories
                     </Button>
-                    <Button variant="secondary" onPress={() => setIsTargetModalOpen(true)}>
+                    <Button
+                        variant="secondary"
+                        onPress={() => setIsTargetModalOpen(true)}>
                         Change target
                     </Button>
                 </div>
             </div>
-            <ChangeTargetCaloriesModal isOpen={isTargetModalOpen} setIsOpen={setIsTargetModalOpen} />
+            <ChangeTargetCaloriesModal
+                isOpen={isTargetModalOpen}
+                setIsOpen={setIsTargetModalOpen}
+            />
         </div>
     );
 }

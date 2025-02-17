@@ -19,7 +19,10 @@ function getColor(value: number) {
     return '#941515';
 }
 
-export function getCellStyle(targetRatio: number, isSelected: boolean): CSSProperties {
+export function getCellStyle(
+    targetRatio: number,
+    isSelected: boolean
+): CSSProperties {
     if (targetRatio) {
         return {
             background: getColor(targetRatio),

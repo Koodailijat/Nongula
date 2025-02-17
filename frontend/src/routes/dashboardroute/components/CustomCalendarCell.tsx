@@ -16,14 +16,25 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
     target,
 }: CustomCalendarCellProps<T>) {
     const ref = useRef(null);
-    const { cellProps, buttonProps, isSelected, isOutsideVisibleRange, isDisabled, isUnavailable, formattedDate } =
-        useCalendarCell({ date }, state, ref);
+    const {
+        cellProps,
+        buttonProps,
+        isSelected,
+        isOutsideVisibleRange,
+        isDisabled,
+        isUnavailable,
+        formattedDate,
+    } = useCalendarCell({ date }, state, ref);
 
     const targetRatio = useMemo(
         () =>
             data
                 .filter((food) => isEqual(food.date, date.toString()))
-                .reduce((previousValue, currentValue) => previousValue + currentValue.calories, 0) / target,
+                .reduce(
+                    (previousValue, currentValue) =>
+                        previousValue + currentValue.calories,
+                    0
+                ) / target,
         [data, date, target]
     );
 
