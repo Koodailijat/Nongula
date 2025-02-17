@@ -101,6 +101,11 @@ export function ModifyRoute() {
         setIsModifyModalOpen(true);
     }
 
+    const foodItems = useMemo(
+        () => (foodsQuery.data ? foodsQuery.data : []),
+        [foodsQuery.data]
+    );
+
     return (
         <div className="modify-route">
             <Heading level={1}>{format(datetime, 'LLLL do')}</Heading>
@@ -123,51 +128,38 @@ export function ModifyRoute() {
                 />
                 <List
                     className="modify-route__list"
-                    items={foodsQuery.data ? foodsQuery.data : []}>
-                    {({ calories, name, id }) => {
-                        if (!id) {
-                            return null;
-                        }
-                        return (
-                            <ListItem
-                                className="modify-route__list-item"
-                                key={id}
-                                id={id}
-                                textValue={name}>
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                    }}>
-                                    <Text size="large">{name}</Text>
-                                    <Text size="large">
-                                        {calories} calories
-                                    </Text>
-                                </div>
-                                <div className="modify-route__list-actions">
-                                    <IconButton
-                                        onPress={() =>
-                                            onModifyPress({
-                                                id,
-                                                name,
-                                                calories,
-                                            })
-                                        }
-                                        icon={<Pen strokeWidth={2} />}
-                                    />
-                                    <IconButton
-                                        icon={
-                                            <Trash
-                                                strokeWidth={2}
-                                                color="red"
-                                            />
-                                        }
-                                        onPress={() => onDelete(id)}
-                                    />
-                                </div>
-                            </ListItem>
-                        );
-                    }}
+                    items={foodItems}
+                    isLoading={foodsQuery.isPending}>
+                    {({ calories, name, id }) => (
+                        <ListItem
+                            className="modify-route__list-item"
+                            key={id}
+                            id={id}
+                            textValue={name}>
+                            <div className="modify-route__list-texts">
+                                <Text size="large">{name}</Text>
+                                <Text size="medium" variant="neutral">
+                                    {calories} kcals
+                                </Text>
+                            </div>
+                            <div className="modify-route__list-actions">
+                                <IconButton
+                                    onPress={() =>
+                                        onModifyPress({
+                                            id,
+                                            name,
+                                            calories,
+                                        })
+                                    }
+                                    icon={<Pen strokeWidth={2} />}
+                                />
+                                <IconButton
+                                    icon={<Trash strokeWidth={2} color="red" />}
+                                    onPress={() => onDelete(id)}
+                                />
+                            </div>
+                        </ListItem>
+                    )}
                 </List>
                 <Button
                     onPress={() => setIsCustomCaloriesModalOpen(true)}

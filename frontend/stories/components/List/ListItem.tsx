@@ -6,7 +6,6 @@ export function ListItem({ className, textValue, ...props }: ListBoxItemProps) {
             {...props}
             textValue={textValue}
             className={`list-item ${className}`}
-            isDisabled={true}
         />
     );
 }
