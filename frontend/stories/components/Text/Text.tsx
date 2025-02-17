@@ -1,8 +1,8 @@
 import { ComponentProps } from 'react';
 
 type TextProps = ComponentProps<'span'> & {
-    /** Text color **/
-    mode?: 'primary' | 'secondary';
+    /** Text variant **/
+    variant?: 'dark' | 'neutral' | 'light';
     /** Text size **/
     size?: 'small' | 'medium' | 'large';
 };
@@ -11,12 +11,15 @@ type TextProps = ComponentProps<'span'> & {
 export const Text = ({
     children,
     size = 'medium',
-    mode = 'primary',
+    variant = 'dark',
+    className,
     ...props
 }: TextProps) => {
     return (
         <span
-            className={[`text--${size}`, `text--${mode}`].join(' ')}
+            className={[`text--${size}`, `text--${variant}`, className].join(
+                ' '
+            )}
             {...props}>
             {children}
         </span>

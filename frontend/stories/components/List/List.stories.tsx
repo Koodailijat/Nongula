@@ -17,7 +17,6 @@ const meta: Meta<typeof List> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
-
 export const Default: Story = {
     render: () => {
         const initialItems = [
@@ -35,6 +34,44 @@ export const Default: Story = {
 
         return (
             <List items={list.items}>
+                {(item) => (
+                    <ListItem key={item.id} id={item.id} textValue={item.text}>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                gap: '16px',
+                            }}>
+                            <Text>{item.text}</Text>
+                            <div style={{ display: 'flex' }}>
+                                <IconButton icon={<Pen strokeWidth={3} />} />
+                                <IconButton
+                                    icon={<Trash strokeWidth={3} color="red" />}
+                                    onPress={() => {
+                                        list.remove(item.id);
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </ListItem>
+                )}
+            </List>
+        );
+    },
+};
+
+export const Loading: Story = {
+    render: () => {
+        const initialItems = [{ id: 1, text: '321 calories' }];
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const list = useListData({
+            initialItems,
+        });
+
+        return (
+            <List isLoading={true} items={list.items}>
                 {(item) => (
                     <ListItem key={item.id} id={item.id} textValue={item.text}>
                         <div
