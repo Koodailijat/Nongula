@@ -1,0 +1,51 @@
+.react-aria-RadioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: $primary-text;
+    width: 100%;
+}
+
+.radio-group__children {
+    display: flex;
+    gap: 1rem;
+}
+
+.react-aria-Radio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: $primary-text;
+
+    &:before {
+        content: '';
+        display: block;
+        width: 1.286rem;
+        height: 1.286rem;
+        box-sizing: border-box;
+        border: 0.1rem solid $primary-text;
+        background: $secondary-text;
+        border-radius: 1.3rem;
+        transition: all 200ms;
+    }
+
+    &[data-pressed]:before {
+        border-color: $primary-text;
+    }
+
+    &[data-selected] {
+        &:before {
+            border-color: $primary;
+            border-width: 0.4rem;
+        }
+
+        &[data-pressed]:before {
+        }
+    }
+
+    &[data-focus-visible]:before {
+        outline: 2px solid $primary-text;
+        outline-offset: 2px;
+    }
+}
