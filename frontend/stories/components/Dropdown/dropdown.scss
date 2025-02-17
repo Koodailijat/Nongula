@@ -58,22 +58,6 @@
         max-height: 15rem;
         background: white;
 
-        &:has(
-                .dropdown__list-box-item:active
-                    ~ .dropdown__list-box-item[data-selected]
-            ) {
-            .dropdown__list-box-item[data-selected] {
-                background: white;
-                color: black;
-            }
-
-            .dropdown__list-box-item:active {
-                border: none;
-                background: $primary;
-                color: white;
-            }
-        }
-
         .dropdown__list-box-item {
             display: flex;
             gap: 8px;
@@ -83,16 +67,16 @@
             border-radius: 4px;
 
             &:hover {
-                border: none;
+                outline: 2px solid black;
                 cursor: pointer;
             }
 
             &:active {
-                border: none;
+                outline: 2px solid black;
             }
 
             &[data-selected] {
-                border: none;
+                outline: none;
                 background: $primary;
                 cursor: pointer;
                 color: white;
