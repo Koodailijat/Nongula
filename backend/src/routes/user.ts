@@ -4,7 +4,7 @@ export const router_user = Router();
 import {
     updateTargetCalories,
     deleteUser,
-    getUser,
+    getUser, updateUserDetails,
 } from '../controllers/user.js';
 import { router } from './auth.js';
 
@@ -13,6 +13,12 @@ router_user.post(
     passport.authenticate('jwt', { session: false }),
     updateTargetCalories
 );
+
+router_user.post(
+    '/setup',
+    passport.authenticate('jwt', { session: false }),
+    updateUserDetails
+)
 
 router_user.get(
     '/user',
