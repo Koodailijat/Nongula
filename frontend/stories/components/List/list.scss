@@ -1,15 +1,31 @@
 .list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    border: 1px solid gray;
+    border-radius: 8px;
+    background: white;
 
     &:focus-visible {
         outline-color: dodgerblue;
     }
-}
 
-.list-item {
-    border: 2px solid $primary;
-    border-radius: 4px;
-    padding: 8px;
+    &[data-loading] {
+        cursor: default;
+
+        .list-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px;
+        }
+    }
+
+    .list-item {
+        border-radius: 4px;
+        padding: 8px;
+
+        &:focus-visible {
+            outline-color: dodgerblue;
+        }
+    }
 }
