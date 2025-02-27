@@ -10,10 +10,14 @@
     font-size: 1.25rem;
 }
 
-.text--primary {
-    color: $primary-text;
+.text--dark {
+    color: $dark-text;
 }
 
-.text--secondary {
-    color: $secondary-text;
+.text-neutarl {
+    color: $neutral-text;
+}
+
+.text--light {
+    color: $light-text;
 }
