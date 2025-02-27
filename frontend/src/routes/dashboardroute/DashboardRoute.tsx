@@ -31,10 +31,17 @@ export function DashboardRoute() {
     );
     const currentDayCalories = useCurrentDayCalories(ISODate, foodsQuery.data);
 
-    const targetCalories = useMemo(
+    const targetCaloriesMin = useMemo(
         () =>
-            userQuery.data?.target_calories
-                ? userQuery.data.target_calories
+            userQuery.data?.target_calories_min
+                ? userQuery.data.target_calories_min
+                : 0,
+        [userQuery.data]
+    );
+    const targetCaloriesMax = useMemo(
+        () =>
+            userQuery.data?.target_calories_max
+                ? userQuery.data.target_calories_max
                 : 0,
         [userQuery.data]
     );
@@ -50,7 +57,7 @@ export function DashboardRoute() {
                     value={currentDayCalories}
                     heading="Calories"
                     isLoading={userQuery.isLoading}
-                    target={targetCalories}
+                    target={targetCaloriesMin}
                 />
                 <Calendar
                     data={foodsQuery.data ? foodsQuery.data : []}
@@ -62,7 +69,8 @@ export function DashboardRoute() {
                             data={data}
                             date={date}
                             state={state}
-                            target={targetCalories}
+                            target_min={targetCaloriesMin}
+                            target_max={targetCaloriesMax}
                             key={key}
                         />
                     )}

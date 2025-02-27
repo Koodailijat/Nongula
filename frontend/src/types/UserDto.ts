@@ -1,5 +1,6 @@
 export interface UserInputDto {
-    target_calories: number;
+    target_calories_min: number;
+    target_calories_max?: number;
 }
 
 export interface UserOutputDto {
