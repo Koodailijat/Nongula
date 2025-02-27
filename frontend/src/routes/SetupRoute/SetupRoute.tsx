@@ -28,6 +28,10 @@ export function SetupRoute() {
             { ...data },
             {
                 onSuccess: () => {
+                    toastQueue.add(
+                        { element: `Setup successful`, severity: 'success' },
+                        { timeout: 5000 }
+                    );
                     navigate('/dashboard');
                 },
                 onError: (error) => {

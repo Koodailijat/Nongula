@@ -1,7 +1,9 @@
 .textfield-icon {
     width: 20px;
-    height: 20px;
+    position: absolute;
     display: flex;
+    top: 10px;
+    height: 20px;
     align-items: center;
 }
 
