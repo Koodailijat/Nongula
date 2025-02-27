@@ -25,7 +25,7 @@ export function ChangeTargetCaloriesModal({
 
     useEffect(() => {
         if (data) {
-            setTargetCalories(data.target_calories.toString());
+            setTargetCalories(data.target_calories_min.toString());
         }
     }, [data]);
 

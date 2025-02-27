@@ -5,5 +5,6 @@ export interface UserInputDto {
 export interface UserOutputDto {
     id: string;
     email: string;
-    target_calories: number;
+    target_calories_min: number;
+    target_calories_max?: number;
 }

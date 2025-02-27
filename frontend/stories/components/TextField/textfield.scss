@@ -21,10 +21,9 @@
 
 .input-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     position: relative;
-    height: 42px;
+    height: fit-content;
 }
 
 .input {
@@ -69,5 +68,10 @@
 }
 
 .RALabel {
-    font-size: 0.8rem;
+    font-size: 1rem;
+}
+
+.textfield--error {
+    color: #b65050;
+    font-weight: bold;
 }
