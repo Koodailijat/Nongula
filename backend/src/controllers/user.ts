@@ -220,7 +220,8 @@ export const updateUserDetails = [
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
+                res.status(400).json({ errors: errors.array() });
+                return;
             }
 
             const userId = req.user.id;
@@ -232,9 +233,8 @@ export const updateUserDetails = [
                 !calorieTable[ageRange] ||
                 !calorieTable[ageRange][gender]
             ) {
-                return res
-                    .status(400)
-                    .json({ error: 'Invalid age or gender input' });
+                res.status(400).json({ error: 'Invalid age or gender input' });
+                return;
             }
 
             const [target_calories_min, target_calories_max] =
@@ -257,8 +257,8 @@ export const updateUserDetails = [
                     target_calories_max: true,
                 },
             });
-
-            return res.status(200).json(user);
+            res.status(200).json(user);
+            return;
         } catch (error) {
             return next(error);
         }
