@@ -47,11 +47,12 @@ export function SetupRoute() {
     return (
         <div className="setup">
             <div className="setup__header">
-                <Heading level={1}>Activity setup</Heading>
+                <Heading level={1}>Activity information</Heading>
             </div>
             <Form className="setup__content" onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     label="Age"
+                    placeholder="Age"
                     isRequired
                     onChange={(value) => setValue('age', Number(value))}
                     errorText={errors.age?.message}
