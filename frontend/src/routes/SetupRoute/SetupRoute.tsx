@@ -47,7 +47,7 @@ export function SetupRoute() {
     return (
         <div className="setup">
             <div className="setup__header">
-                <Heading level={1}>Setup route</Heading>
+                <Heading level={1}>Activity setup</Heading>
             </div>
             <Form className="setup__content" onSubmit={handleSubmit(onSubmit)}>
                 <TextField
@@ -79,7 +79,7 @@ export function SetupRoute() {
                         { id: 3, name: 'Active' },
                     ]}
                 />
-                <Button type="submit">Login</Button>
+                <Button type="submit">Update information</Button>
             </Form>
         </div>
     );

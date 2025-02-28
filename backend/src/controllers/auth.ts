@@ -46,7 +46,22 @@ export const signup = [
                     target_calories_min: req.body.target_calories_min || 2000,
                 },
             });
-            res.status(201).json({});
+
+            const loggedInUser = await prisma.user.findUnique({
+                where: { email: req.body.email },
+            });
+
+            const token = jwt.sign(
+                { sub: loggedInUser.id, email: loggedInUser.email },
+                process.env.AUTH_SECRET,
+                { expiresIn: '20h' }
+            );
+
+            res.status(201).json({
+                token,
+                id: loggedInUser.id,
+                email: loggedInUser.email,
+            });
             return;
         } catch (error) {
             return next(error);

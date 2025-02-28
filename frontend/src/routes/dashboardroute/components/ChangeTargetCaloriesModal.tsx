@@ -37,7 +37,7 @@ export function ChangeTargetCaloriesModal({
         if (Number(targetCalories) > 0) {
             userMutation.mutate(
                 {
-                    target_calories: Number(targetCalories),
+                    target_calories_min: Number(targetCalories),
                 },
                 {
                     onSuccess: () => {
