@@ -225,7 +225,7 @@ export const updateUserDetails = [
 
             const userId = req.user.id;
             const { age, gender, activity_level } = req.body;
-            console.log(age, gender, activity_level);
+
             const ageRange = mapAgeToRange(age);
             if (
                 !ageRange ||
