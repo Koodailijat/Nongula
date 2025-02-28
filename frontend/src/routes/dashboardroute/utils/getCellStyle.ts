@@ -1,31 +1,25 @@
 import { CSSProperties } from 'react';
 
-function getColor(value: number) {
+function getColor(value: number, min: number, max: number) {
     if (value < 0.2) {
-        return '#00c65a';
-    } else if (value < 0.4) {
-        return '#19a052';
-    } else if (value < 0.6) {
-        return '#0b9244';
-    } else if (value < 0.8) {
-        return '#008537';
-    } else if (value < 1.1) {
-        return '#006824';
-    } else if (value < 1.3) {
+        return '#ffffff';
+    } else if (value < min) {
         return '#bcba29';
-    } else if (value < 1.5) {
-        return '#c23b26';
+    } else if (value < max) {
+        return '#008537';
     }
-    return '#941515';
+    return '#c23b26';
 }
 
 export function getCellStyle(
-    targetRatio: number,
+    value: number,
+    min: number,
+    max: number,
     isSelected: boolean
 ): CSSProperties {
-    if (targetRatio) {
+    if (value) {
         return {
-            background: getColor(targetRatio),
+            background: getColor(value, min, max),
             outline: isSelected ? '4px solid black' : 'none',
         };
     }

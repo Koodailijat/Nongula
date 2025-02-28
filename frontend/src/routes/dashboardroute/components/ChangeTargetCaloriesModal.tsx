@@ -25,7 +25,7 @@ export function ChangeTargetCaloriesModal({
 
     useEffect(() => {
         if (data) {
-            setTargetCalories(data.target_calories.toString());
+            setTargetCalories(data.target_calories_min.toString());
         }
     }, [data]);
 
@@ -37,7 +37,7 @@ export function ChangeTargetCaloriesModal({
         if (Number(targetCalories) > 0) {
             userMutation.mutate(
                 {
-                    target_calories: Number(targetCalories),
+                    target_calories_min: Number(targetCalories),
                 },
                 {
                     onSuccess: () => {

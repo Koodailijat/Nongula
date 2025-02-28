@@ -114,9 +114,11 @@ export function ModifyRoute() {
                     <ProgressBar
                         isLoading={userQuery.isPending}
                         label={"Today's calories"}
-                        targetValue={Number(userQuery.data?.target_calories)}
+                        targetValue={Number(
+                            userQuery.data?.target_calories_min
+                        )}
                         value={currentDayCalories}
-                        valueText={`${currentDayCalories} / ${userQuery.data?.target_calories} kcal`}
+                        valueText={`${currentDayCalories} / ${userQuery.data?.target_calories_min} kcal`}
                     />
                 </div>
                 <SearchBar

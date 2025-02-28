@@ -3,4 +3,5 @@ export const mutationKeys = {
     singup: 'signup',
     user: 'user',
     food: 'food',
+    setup: 'setup',
 };

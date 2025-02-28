@@ -33,7 +33,7 @@ export function SignUpRoute() {
                         { element: 'Account created', severity: 'success' },
                         { timeout: 5000 }
                     );
-                    navigate('/login');
+                    navigate('/setup');
                 },
                 onError: (error) => {
                     toastQueue.add(
