@@ -7,7 +7,7 @@ import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import './customcaloriesmodal.scss';
 import { useFoodModifyMutation } from '../../../api/queries/foodQueries.tsx';
 import { FoodInputDto } from '../../../types/FoodDto.ts';
-import { useMediaQuery } from 'usehooks-ts';
+import { useIsDesktopMode } from '../../../hooks/useIsDesktopMode.tsx';
 
 interface ModifyCaloriesModalProps {
     isOpen: boolean;
@@ -20,7 +20,7 @@ export function ModifyCaloriesModal({
     setOpen,
     item,
 }: ModifyCaloriesModalProps) {
-    const isDesktopMode = useMediaQuery('(min-width: 500px)');
+    const isDesktopMode = useIsDesktopMode();
     const [name, setName] = useState(item.name);
     const [calories, setCalories] = useState(item.calories.toString());
 

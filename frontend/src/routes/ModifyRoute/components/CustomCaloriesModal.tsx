@@ -8,7 +8,7 @@ import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import './customcaloriesmodal.scss';
 import { useParams } from 'react-router';
 import { useFoodMutation } from '../../../api/queries/foodQueries.tsx';
-import { useMediaQuery } from 'usehooks-ts';
+import { useIsDesktopMode } from '../../../hooks/useIsDesktopMode.tsx';
 
 interface CustomCaloriesModalProps {
     isOpen: boolean;
@@ -19,7 +19,7 @@ export function CustomCaloriesModal({
     isOpen,
     setOpen,
 }: CustomCaloriesModalProps) {
-    const isDesktopMode = useMediaQuery('(min-width: 500px)');
+    const isDesktopMode = useIsDesktopMode();
     const [selectedSegment, setSelectedSegment] = useState(0);
     const [totalCalories, setTotalCalories] = useState('0');
     const [calories, setCalories] = useState('0');

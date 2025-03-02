@@ -38,6 +38,7 @@ export const TextField = ({
     label,
     errorText,
     isNumberField = false,
+    type,
     ...props
 }: TextFieldProps) => {
     return (
@@ -53,7 +54,7 @@ export const TextField = ({
                     </div>
                 )}
                 <RAInput
-                    type={isNumberField ? 'number' : 'text'}
+                    type={isNumberField ? 'number' : type}
                     className={`input ${getIconInputStyle(icon, iconSide)}`}></RAInput>
                 {iconSide === 'right' && icon && (
                     <div className="textfield-icon textfield-icon--right">

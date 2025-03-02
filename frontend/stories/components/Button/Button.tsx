@@ -15,15 +15,19 @@ export interface ButtonProps extends RAButtonProps {
 
 export const Button = ({
     children,
+    className,
     icon,
     variant = 'primary',
     ...props
 }: ButtonProps) => {
     return (
         <RAButton
-            className={['button', `button--${variant}`, 'button--primary'].join(
-                ' '
-            )}
+            className={[
+                'button',
+                `button--${variant}`,
+                'button--primary',
+                className,
+            ].join(' ')}
             {...props}>
             {props.isPending ? (
                 <Spinner fill={props.isDisabled ? 'gray' : 'white'} />
