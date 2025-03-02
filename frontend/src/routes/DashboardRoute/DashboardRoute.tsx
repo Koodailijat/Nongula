@@ -15,9 +15,12 @@ import { useFoodsQuery } from '../../api/queries/foodQueries.tsx';
 import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
 import { getVisibleRange } from './utils/getVisibleRange.ts';
 import { CustomCalendarCell } from './components/CustomCalendarCell.tsx';
+import { ToggleButton } from '../../../stories/components/ToggleButton/ToggleButton.tsx';
+import { useIsColorblindLocalStorage } from '../../hooks/useIsColorblindLocalStorage.tsx';
 
 export function DashboardRoute() {
     const navigate = useNavigate();
+    const [isColorblind, setIsColorblind] = useIsColorblindLocalStorage();
     const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
     const [calendarState, locale] = useNongulaCalendarState();
     const selectedDate = useSelectedDate(calendarState);
@@ -58,7 +61,9 @@ export function DashboardRoute() {
                     heading="Calories"
                     isLoading={userQuery.isLoading}
                     target={targetCaloriesMin}
+                    targetText={`${targetCaloriesMin}-${targetCaloriesMax}`}
                 />
+
                 <Calendar
                     data={foodsQuery.data ? foodsQuery.data : []}
                     state={calendarState}
@@ -72,6 +77,7 @@ export function DashboardRoute() {
                             target_min={targetCaloriesMin}
                             target_max={targetCaloriesMax}
                             key={key}
+                            colorblind={isColorblind}
                         />
                     )}
                 </Calendar>
@@ -84,8 +90,13 @@ export function DashboardRoute() {
                     <Button
                         variant="secondary"
                         onPress={() => setIsTargetModalOpen(true)}>
-                        Change target
+                        Change targets
                     </Button>
+                    <ToggleButton
+                        isSelected={isColorblind}
+                        onChange={setIsColorblind}>
+                        Accessible colors
+                    </ToggleButton>
                 </div>
             </div>
             <ChangeTargetCaloriesModal

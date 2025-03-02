@@ -16,7 +16,7 @@ export interface TextFieldProps extends RATextFieldProps {
     label?: string;
     /** Error text **/
     errorText?: string;
-    /** Number field **/
+    /** Is number field **/
     isNumberField?: boolean;
 }
 
