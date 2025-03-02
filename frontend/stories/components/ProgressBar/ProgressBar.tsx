@@ -48,7 +48,7 @@ export const ProgressBar = ({
                             background: getColor(
                                 value,
                                 target_min,
-                                target_max ?? 9999
+                                target_max ?? Infinity
                             ),
                         }}
                     />

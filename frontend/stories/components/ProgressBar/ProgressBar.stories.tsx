@@ -19,7 +19,7 @@ export const Default: Story = {
             <div style={{ width: '250px' }}>
                 <ProgressBar
                     label={"Today's calories"}
-                    value={65}
+                    value={260}
                     target_min={1722}
                     valueText={'1722 kcal'}
                 />
