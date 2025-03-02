@@ -59,36 +59,62 @@
             background: #c23b26;
         }
 
-        &[data-colorblind="true"] {
+        &[data-colorblind='true'] {
             &.yellow {
                 color: white;
                 background-color: #bcba29;
                 opacity: 0.8;
-                background-image: linear-gradient(0deg, #bcba29 50%, #717019 50%);
-                background-size: 8px 8px
+                background-image: linear-gradient(
+                    0deg,
+                    #bcba29 50%,
+                    #717019 50%
+                );
+                background-size: 8px 8px;
             }
             &.green {
                 background-color: #008537;
                 opacity: 0.8;
-                background-image: linear-gradient(135deg, #005021 25%, transparent 25%),
-                linear-gradient(225deg, #005021 25%, transparent 25%),
-                linear-gradient(45deg, #005021 25%, transparent 25%),
-                linear-gradient(315deg, #005021 25%, #008537 25%);
-                background-position: 8px 0, 8px 0, 0 0, 0 0;
+                background-image:
+                    linear-gradient(135deg, #005021 25%, transparent 25%),
+                    linear-gradient(225deg, #005021 25%, transparent 25%),
+                    linear-gradient(45deg, #005021 25%, transparent 25%),
+                    linear-gradient(315deg, #005021 25%, #008537 25%);
+                background-position:
+                    8px 0,
+                    8px 0,
+                    0 0,
+                    0 0;
                 background-size: 16px 16px;
                 background-repeat: repeat;
             }
             &.red {
                 background-color: #c23b26;
                 opacity: 0.8;
-                background-image: repeating-linear-gradient(45deg, #742317 25%, transparent 25%, transparent 75%, #742317 75%, #742317),
-                repeating-linear-gradient(45deg, #742317 25%, #c23b26 25%, #c23b26 75%, #742317 75%, #742317);
-                background-position: 0 0, 8px 8px;
-                background-size: 16px 16px
+                background-image:
+                    repeating-linear-gradient(
+                        45deg,
+                        #742317 25%,
+                        transparent 25%,
+                        transparent 75%,
+                        #742317 75%,
+                        #742317
+                    ),
+                    repeating-linear-gradient(
+                        45deg,
+                        #742317 25%,
+                        #c23b26 25%,
+                        #c23b26 75%,
+                        #742317 75%,
+                        #742317
+                    );
+                background-position:
+                    0 0,
+                    8px 8px;
+                background-size: 16px 16px;
             }
         }
 
-        &[data-selected="true"] {
+        &[data-selected='true'] {
             outline: 4px solid black;
         }
 
@@ -106,7 +132,6 @@
         }
     }
 }
-
 
 @media (min-width: 500px) {
     .calendar {
