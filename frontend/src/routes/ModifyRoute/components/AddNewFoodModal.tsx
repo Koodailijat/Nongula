@@ -7,7 +7,7 @@ import { PlusIcon } from 'lucide-react';
 import { useParams } from 'react-router';
 import { useFoodMutation } from '../../../api/queries/foodQueries.tsx';
 import { FoodInputDto } from '../../../types/FoodDto.ts';
-import { useMediaQuery } from 'usehooks-ts';
+import { useIsDesktopMode } from '../../../hooks/useIsDesktopMode.tsx';
 
 interface AddNewFoodModalProps {
     isOpen: boolean;
@@ -20,7 +20,7 @@ export function AddNewFoodModal({
     setOpen,
     item,
 }: AddNewFoodModalProps) {
-    const isDesktopMode = useMediaQuery('(min-width: 500px)');
+    const isDesktopMode = useIsDesktopMode();
     const date = useParams().date!;
     const [calories, setCalories] = useState(item.calories.toString());
     const [weight, setWeight] = useState('100');

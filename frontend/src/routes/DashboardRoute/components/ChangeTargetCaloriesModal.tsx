@@ -10,7 +10,7 @@ import {
     useUserQuery,
 } from '../../../api/queries/userQueries.tsx';
 import { useNavigate } from 'react-router';
-import { useMediaQuery } from 'usehooks-ts';
+import { useIsDesktopMode } from '../../../hooks/useIsDesktopMode.tsx';
 
 interface ChangeTargetCaloriesModalProps {
     isOpen: boolean;
@@ -24,7 +24,7 @@ export function ChangeTargetCaloriesModal({
     const navigate = useNavigate();
     const { data } = useUserQuery();
     const userMutation = useUserMutation();
-    const isDesktopMode = useMediaQuery('(min-width: 500px)');
+    const isDesktopMode = useIsDesktopMode();
     const [targetCaloriesMin, setTargetCaloriesMin] = useState('');
     const [targetCaloriesMax, setTargetCaloriesMax] = useState('');
 
