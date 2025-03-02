@@ -6,14 +6,16 @@ import { isEqual } from 'date-fns';
 import { getCellStyle } from '../utils/getCellStyle.ts';
 
 interface CustomCalendarCellProps<T> extends CalendarCellProps<T> {
-    target: number;
+    target_min: number;
+    target_max: number;
 }
 
 export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
     state,
     date,
     data,
-    target,
+    target_min,
+    target_max,
 }: CustomCalendarCellProps<T>) {
     const ref = useRef(null);
     const {
@@ -26,7 +28,7 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
         formattedDate,
     } = useCalendarCell({ date }, state, ref);
 
-    const targetRatio = useMemo(
+    const value = useMemo(
         () =>
             data
                 .filter((food) => isEqual(food.date, date.toString()))
@@ -34,8 +36,8 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                     (previousValue, currentValue) =>
                         previousValue + currentValue.calories,
                     0
-                ) / target,
-        [data, date, target]
+                ),
+        [data, date]
     );
 
     return (
@@ -47,7 +49,7 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 className={`calendar-cell ${isSelected ? 'selected' : ''} ${
                     isDisabled ? 'disabled' : ''
                 } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(targetRatio, isSelected)}>
+                style={getCellStyle(value, target_min, target_max, isSelected)}>
                 {formattedDate}
             </div>
         </td>

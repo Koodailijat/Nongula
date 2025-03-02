@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar, CalendarCellProps } from './Calendar.tsx';
 import { useNongulaCalendarState } from './useNongulaCalendarState.tsx';
-import { getCellStyle } from '../../../src/routes/dashboardroute/utils/getCellStyle.ts';
-import { useMemo, useRef } from 'react';
+import { CSSProperties, useMemo, useRef } from 'react';
 import { useCalendarCell } from 'react-aria';
 import { isEqual } from 'date-fns';
 import { FoodOutputDto } from '../../../src/types/FoodDto.ts';
@@ -15,15 +14,44 @@ const meta: Meta<typeof Calendar> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+function getColor(value: number, min: number, max: number) {
+    if (value < 0.2) {
+        return '#ffffff';
+    } else if (value < min) {
+        return '#bcba29';
+    } else if (value < max) {
+        return '#008537';
+    }
+    return '#c23b26';
+}
+
+function getCellStyle(
+    value: number,
+    min: number,
+    max: number,
+    isSelected: boolean
+): CSSProperties {
+    if (value) {
+        return {
+            background: getColor(value, min, max),
+            outline: isSelected ? '4px solid black' : 'none',
+        };
+    }
+
+    return { outline: isSelected ? '4px solid black' : 'none' };
+}
+
 interface ExampleCalendarCellProps<T> extends CalendarCellProps<T> {
-    target: number;
+    target_min: number;
+    target_max: number;
 }
 
 function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
     state,
     date,
     data,
-    target,
+    target_min,
+    target_max,
 }: ExampleCalendarCellProps<T>) {
     const ref = useRef(null);
     const {
@@ -36,7 +64,7 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
         formattedDate,
     } = useCalendarCell({ date }, state, ref);
 
-    const targetRatio = useMemo(
+    const value = useMemo(
         () =>
             data
                 .filter((food) => isEqual(food.date, date.toString()))
@@ -44,8 +72,8 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                     (previousValue, currentValue) =>
                         previousValue + currentValue.calories,
                     0
-                ) / target,
-        [data, date, target]
+                ),
+        [data, date]
     );
 
     return (
@@ -57,7 +85,7 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 className={`calendar-cell ${isSelected ? 'selected' : ''} ${
                     isDisabled ? 'disabled' : ''
                 } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(targetRatio, isSelected)}>
+                style={getCellStyle(value, target_min, target_max, isSelected)}>
                 {formattedDate}
             </div>
         </td>
@@ -108,7 +136,8 @@ export const Default: Story = {
                         data={data}
                         date={date}
                         state={state}
-                        target={2150}
+                        target_min={2150}
+                        target_max={2650}
                         key={key}
                     />
                 )}

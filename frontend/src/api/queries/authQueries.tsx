@@ -15,8 +15,12 @@ export function useLoginMutation() {
 }
 
 export function useSignUpMutation() {
+    const [, setAuthState] = useAuthLocalStorage();
     return useMutation({
         mutationFn: signUpRequest,
         mutationKey: [mutationKeys.singup],
+        onSuccess: (data) => {
+            setAuthState(data.token);
+        },
     });
 }
