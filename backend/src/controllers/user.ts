@@ -5,7 +5,10 @@ import createHttpError from 'http-errors';
 import bcrypt from 'bcryptjs';
 
 export const updateTargetCalories = [
-    body('target_calories', 'Target calories must be a positive integer')
+    body('target_calories_min', 'Target calories must be a positive integer')
+        .isInt({ min: 1 })
+        .withMessage('Target calories must be greater than 0'),
+    body('target_calories_max', 'Target calories must be a positive integer')
         .isInt({ min: 1 })
         .withMessage('Target calories must be greater than 0'),
 
@@ -18,11 +21,11 @@ export const updateTargetCalories = [
             }
 
             const userId = req.user.id;
-            const { target_calories_min } = req.body;
+            const { target_calories_min, target_calories_max } = req.body;
 
             const user = await prisma.user.update({
                 where: { id: userId },
-                data: { target_calories_min },
+                data: { target_calories_min, target_calories_max },
                 select: { target_calories_min: true },
             });
 
@@ -238,8 +241,7 @@ export const updateUserDetails = [
             }
 
             const [target_calories_min, target_calories_max] =
-                calorieTable[ageRange][gender][activity_level];
-
+                calorieTable[ageRange][gender][activity_level - 1];
             const user = await prisma.user.update({
                 where: { id: userId },
                 data: {
