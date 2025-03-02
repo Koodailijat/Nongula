@@ -69,6 +69,7 @@ export function CustomCaloriesModal({
                         <TextField
                             label="Total calories"
                             placeholder="Total calories"
+                            isNumberField={true}
                             onChange={(value) => setTotalCalories(value)}
                         />
                     ) : (
@@ -77,11 +78,13 @@ export function CustomCaloriesModal({
                                 label="Calories (Kcal / 100g)"
                                 placeholder="Calories (Kcal / 100g)"
                                 value={calories}
+                                isNumberField={true}
                                 onChange={(value) => setCalories(value)}
                             />
                             <TextField
                                 label="Weight (g)"
                                 placeholder="Weight (g)"
+                                isNumberField={true}
                                 onChange={(value) => setWeight(value)}
                             />
                         </>

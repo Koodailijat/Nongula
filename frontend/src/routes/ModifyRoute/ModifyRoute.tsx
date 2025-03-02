@@ -141,7 +141,7 @@ export function ModifyRoute() {
                             <div className="modify-route__list-texts">
                                 <Text size="large">{name}</Text>
                                 <Text size="medium" variant="neutral">
-                                    {calories} kcals
+                                    {calories} kcal
                                 </Text>
                             </div>
                             <div className="modify-route__list-actions">

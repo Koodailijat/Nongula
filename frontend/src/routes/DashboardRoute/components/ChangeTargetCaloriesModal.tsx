@@ -70,6 +70,7 @@ export function ChangeTargetCaloriesModal({
                     value={targetCaloriesMin}
                     onChange={setTargetCaloriesMin}
                     label={'Minimum target calories'}
+                    isNumberField={true}
                     placeholder={'Minimum target calories'}
                     isDisabled={userMutation.isPending}
                 />
@@ -77,6 +78,7 @@ export function ChangeTargetCaloriesModal({
                     value={targetCaloriesMax}
                     onChange={setTargetCaloriesMax}
                     label={'Max target calories'}
+                    isNumberField={true}
                     placeholder={'Max target calories'}
                     isDisabled={userMutation.isPending}
                 />
