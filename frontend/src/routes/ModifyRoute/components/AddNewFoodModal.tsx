@@ -67,12 +67,14 @@ export function AddNewFoodModal({
                 />
                 <>
                     <TextField
+                        isNumberField={true}
                         label="Calories (Kcal / 100g)"
                         placeholder="Calories (Kcal / 100g)"
                         onChange={(value) => setCalories(value)}
                         value={calories}
                     />
                     <TextField
+                        isNumberField={true}
                         label="Weight (g)"
                         placeholder="Weight (g)"
                         value={weight}

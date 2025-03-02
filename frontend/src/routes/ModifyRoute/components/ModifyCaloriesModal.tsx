@@ -65,6 +65,7 @@ export function ModifyCaloriesModal({
                         value={calories}
                         onChange={(text) => setCalories(text)}
                         label={'Total calories'}
+                        isNumberField={true}
                         placeholder={'Input calories'}
                     />
                 </div>

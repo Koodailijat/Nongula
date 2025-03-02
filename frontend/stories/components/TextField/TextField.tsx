@@ -16,6 +16,8 @@ export interface TextFieldProps extends RATextFieldProps {
     label?: string;
     /** Error text **/
     errorText?: string;
+    /** Number field **/
+    isNumberField?: boolean;
 }
 
 function getIconInputStyle(icon: ReactNode, iconSide: 'left' | 'right') {
@@ -35,6 +37,7 @@ export const TextField = ({
     icon,
     label,
     errorText,
+    isNumberField = false,
     ...props
 }: TextFieldProps) => {
     return (
@@ -50,6 +53,7 @@ export const TextField = ({
                     </div>
                 )}
                 <RAInput
+                    type={isNumberField ? 'number' : 'text'}
                     className={`input ${getIconInputStyle(icon, iconSide)}`}></RAInput>
                 {iconSide === 'right' && icon && (
                     <div className="textfield-icon textfield-icon--right">

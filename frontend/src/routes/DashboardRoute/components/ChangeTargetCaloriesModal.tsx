@@ -62,6 +62,7 @@ export function ChangeTargetCaloriesModal({
                     Change target
                 </Heading>
                 <TextField
+                    isNumberField={true}
                     value={targetCalories}
                     onChange={setTargetCalories}
                     label={'Target calories'}
