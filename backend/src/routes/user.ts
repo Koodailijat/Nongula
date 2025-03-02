@@ -6,8 +6,15 @@ import {
     deleteUser,
     getUser,
     updateUserDetails,
+    getCalorieStreak,
 } from '../controllers/user.js';
 import { router } from './auth.js';
+
+router_user.get(
+    '/user/streak',
+    passport.authenticate('jwt', { session: false }),
+    getCalorieStreak
+);
 
 router_user.post(
     '/user',
