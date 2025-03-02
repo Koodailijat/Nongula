@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar, CalendarCellProps } from './Calendar.tsx';
 import { useNongulaCalendarState } from './useNongulaCalendarState.tsx';
-import { CSSProperties, useMemo, useRef } from 'react';
+import { CSSProperties, useEffect, useMemo, useRef } from 'react';
 import { useCalendarCell } from 'react-aria';
 import { isEqual } from 'date-fns';
 import { FoodOutputDto } from '../../../src/types/FoodDto.ts';
+import { CalendarDate } from '@internationalized/date';
 
 const meta: Meta<typeof Calendar> = {
     component: Calendar,
@@ -14,26 +15,70 @@ const meta: Meta<typeof Calendar> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-function getColor(value: number, min: number, max: number) {
+function getBackground(
+    value: number,
+    min: number,
+    max: number,
+    colorblind?: boolean
+) {
     if (value < 0.2) {
-        return '#ffffff';
+        return {
+            backgroundColor: '#ffffff',
+        };
     } else if (value < min) {
-        return '#bcba29';
+        if (colorblind) {
+            return {
+                backgroundColor: '#bcba29',
+                opacity: 0.8,
+                backgroundImage:
+                    'linear-gradient(0deg, #bcba29 50%, #717019 50%)',
+                backgroundSize: '8px 8px',
+            };
+        }
+        return {
+            backgroundColor: '#bcba29',
+        };
     } else if (value < max) {
-        return '#008537';
+        if (colorblind) {
+            return {
+                backgroundColor: '#008537',
+                opacity: 0.8,
+                backgroundImage:
+                    'linear-gradient(135deg, #005021 25%, transparent 25%), linear-gradient(225deg, #005021 25%, transparent 25%), linear-gradient(45deg, #005021 25%, transparent 25%), linear-gradient(315deg, #005021 25%, #008537 25%)',
+                backgroundPosition: '8px 0, 8px 0, 0 0, 0 0',
+                backgroundSize: '16px 16px',
+                backgroundRepeat: 'repeat',
+            };
+        }
+        return {
+            backgroundColor: '#008537',
+        };
     }
-    return '#c23b26';
+    if (colorblind) {
+        return {
+            backgroundColor: '#c23b26',
+            opacity: 0.8,
+            backgroundImage:
+                'repeating-linear-gradient(45deg, #742317 25%, transparent 25%, transparent 75%, #742317 75%, #742317), repeating-linear-gradient(45deg, #742317 25%, #c23b26 25%, #c23b26 75%, #742317 75%, #742317)',
+            backgroundPosition: '0 0, 8px 8px',
+            backgroundSize: '16px 16px',
+        };
+    }
+    return {
+        backgroundColor: '#c23b26',
+    };
 }
 
 function getCellStyle(
     value: number,
     min: number,
     max: number,
-    isSelected: boolean
+    isSelected: boolean,
+    colorblind?: boolean
 ): CSSProperties {
     if (value) {
         return {
-            background: getColor(value, min, max),
+            ...getBackground(value, min, max, colorblind),
             outline: isSelected ? '4px solid black' : 'none',
         };
     }
@@ -44,6 +89,7 @@ function getCellStyle(
 interface ExampleCalendarCellProps<T> extends CalendarCellProps<T> {
     target_min: number;
     target_max: number;
+    colorblind?: boolean;
 }
 
 function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
@@ -52,6 +98,7 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
     data,
     target_min,
     target_max,
+    colorblind,
 }: ExampleCalendarCellProps<T>) {
     const ref = useRef(null);
     const {
@@ -85,7 +132,13 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 className={`calendar-cell ${isSelected ? 'selected' : ''} ${
                     isDisabled ? 'disabled' : ''
                 } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(value, target_min, target_max, isSelected)}>
+                style={getCellStyle(
+                    value,
+                    target_min,
+                    target_max,
+                    isSelected,
+                    colorblind
+                )}>
                 {formattedDate}
             </div>
         </td>
@@ -129,6 +182,11 @@ export const Default: Story = {
     render: () => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const [state, locale] = useNongulaCalendarState();
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+            state.setFocusedDate(new CalendarDate(2025, 1, 15));
+        }, []);
+
         return (
             <Calendar data={exampleData} state={state} locale={locale.locale}>
                 {({ data, date, state, key }) => (
@@ -139,6 +197,33 @@ export const Default: Story = {
                         target_min={2150}
                         target_max={2650}
                         key={key}
+                    />
+                )}
+            </Calendar>
+        );
+    },
+};
+
+export const Colorblind: Story = {
+    render: () => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [state, locale] = useNongulaCalendarState();
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useEffect(() => {
+            state.setFocusedDate(new CalendarDate(2025, 1, 15));
+        }, []);
+
+        return (
+            <Calendar data={exampleData} state={state} locale={locale.locale}>
+                {({ data, date, state, key }) => (
+                    <ExampleCalendarCell
+                        data={data}
+                        date={date}
+                        state={state}
+                        target_min={2150}
+                        target_max={2650}
+                        key={key}
+                        colorblind={true}
                     />
                 )}
             </Calendar>

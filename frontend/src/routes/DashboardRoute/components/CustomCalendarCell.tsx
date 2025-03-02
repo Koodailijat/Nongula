@@ -8,6 +8,7 @@ import { getCellStyle } from '../utils/getCellStyle.ts';
 interface CustomCalendarCellProps<T> extends CalendarCellProps<T> {
     target_min: number;
     target_max: number;
+    colorblind?: boolean;
 }
 
 export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
@@ -16,6 +17,7 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
     data,
     target_min,
     target_max,
+    colorblind,
 }: CustomCalendarCellProps<T>) {
     const ref = useRef(null);
     const {
@@ -49,7 +51,13 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 className={`calendar-cell ${isSelected ? 'selected' : ''} ${
                     isDisabled ? 'disabled' : ''
                 } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(value, target_min, target_max, isSelected)}>
+                style={getCellStyle(
+                    value,
+                    target_min,
+                    target_max,
+                    isSelected,
+                    colorblind
+                )}>
                 {formattedDate}
             </div>
         </td>
