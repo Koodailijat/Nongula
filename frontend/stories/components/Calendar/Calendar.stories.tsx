@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar, CalendarCellProps } from './Calendar.tsx';
 import { useNongulaCalendarState } from './useNongulaCalendarState.tsx';
-import { getCellStyle } from '../../../src/routes/DashboardRoute/utils/getCellStyle.ts';
-import { useMemo, useRef } from 'react';
+import { CSSProperties, useMemo, useRef } from 'react';
 import { useCalendarCell } from 'react-aria';
 import { isEqual } from 'date-fns';
 import { FoodOutputDto } from '../../../src/types/FoodDto.ts';
@@ -14,6 +13,33 @@ const meta: Meta<typeof Calendar> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+function getColor(value: number, min: number, max: number) {
+    if (value < 0.2) {
+        return '#ffffff';
+    } else if (value < min) {
+        return '#bcba29';
+    } else if (value < max) {
+        return '#008537';
+    }
+    return '#c23b26';
+}
+
+function getCellStyle(
+    value: number,
+    min: number,
+    max: number,
+    isSelected: boolean
+): CSSProperties {
+    if (value) {
+        return {
+            background: getColor(value, min, max),
+            outline: isSelected ? '4px solid black' : 'none',
+        };
+    }
+
+    return { outline: isSelected ? '4px solid black' : 'none' };
+}
 
 interface ExampleCalendarCellProps<T> extends CalendarCellProps<T> {
     target_min: number;
