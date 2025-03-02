@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { CircularProgressBar } from './CircularProgressBar.tsx';
 
-const meta = {
+const meta: Meta<typeof CircularProgressBar> = {
     title: 'CircularProgressBar',
     component: CircularProgressBar,
     parameters: {
@@ -11,7 +11,7 @@ const meta = {
     argTypes: {
         value: { control: 'range', min: 0, max: 100, step: 1, defaultValue: 0 },
     },
-} satisfies Meta<typeof CircularProgressBar>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -19,6 +19,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     args: {
         value: 50,
+        target_min: 100,
+        targetText: '100',
     },
 };
 
@@ -29,10 +31,44 @@ export const Loading: Story = {
     },
 };
 
+export const Colors: Story = {
+    render: () => {
+        return (
+            <div>
+                <CircularProgressBar
+                    value={0}
+                    target_min={2150}
+                    target_max={2650}
+                    targetText="2650"
+                />
+                <CircularProgressBar
+                    value={1650}
+                    target_min={2150}
+                    target_max={2650}
+                    targetText="2650"
+                />
+                <CircularProgressBar
+                    value={2320}
+                    target_min={2150}
+                    target_max={2650}
+                    targetText="2650"
+                />
+                <CircularProgressBar
+                    value={2860}
+                    target_min={2150}
+                    target_max={2650}
+                    targetText="2650"
+                />
+            </div>
+        );
+    },
+};
+
 export const WithTargetValue: Story = {
     args: {
         value: 50,
-        target: 100,
+        target_min: 100,
+        targetText: '/ 100',
     },
 };
 
@@ -47,6 +83,7 @@ export const WithHeadingAndTarget: Story = {
     args: {
         value: 1240,
         heading: 'Calories',
-        target: 2100,
+        target_min: 2100,
+        targetText: '/ 2100 kcals',
     },
 };
