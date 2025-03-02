@@ -20,7 +20,51 @@ export const Default: Story = {
                 <ProgressBar
                     label={"Today's calories"}
                     value={65}
+                    target_min={1722}
                     valueText={'1722 kcal'}
+                />
+            </div>
+        );
+    },
+};
+
+export const Colors: Story = {
+    render: () => {
+        return (
+            <div
+                style={{
+                    width: '250px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                }}>
+                <ProgressBar
+                    value={0}
+                    target_min={2150}
+                    target_max={2650}
+                    label="white"
+                    valueText="0 / [2150 - 2650]"
+                />
+                <ProgressBar
+                    value={1650}
+                    target_min={2150}
+                    target_max={2650}
+                    label="yellow"
+                    valueText="1650 / [2150 - 2650]"
+                />
+                <ProgressBar
+                    value={2320}
+                    target_min={2150}
+                    target_max={2650}
+                    label="green"
+                    valueText="2320 / [2150 - 2650]"
+                />
+                <ProgressBar
+                    value={2860}
+                    target_min={2150}
+                    target_max={2650}
+                    label="red"
+                    valueText="2860 / [2150 - 2650]"
                 />
             </div>
         );
@@ -31,7 +75,12 @@ export const WithPercentage: Story = {
     render: () => {
         return (
             <div style={{ width: '250px' }}>
-                <ProgressBar label={'Progress'} value={24} valueText={'24%'} />
+                <ProgressBar
+                    label={'Progress'}
+                    value={24}
+                    target_min={100}
+                    valueText={'24%'}
+                />
             </div>
         );
     },
@@ -45,6 +94,7 @@ export const Loading: Story = {
                     isLoading={true}
                     label={"Today's calories"}
                     value={65}
+                    target_min={1722}
                     valueText={'1722 kcal'}
                 />
             </div>

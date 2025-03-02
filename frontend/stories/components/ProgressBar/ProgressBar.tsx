@@ -17,7 +17,7 @@ function getColor(value: number, min: number, max: number) {
 interface ProgressBarProps {
     label: string;
     target_min: number;
-    target_max: number;
+    target_max?: number;
     value: number;
     valueText: string;
     isLoading?: boolean;
@@ -45,7 +45,11 @@ export const ProgressBar = ({
                         className="progress-bar__bar-fill"
                         style={{
                             width: (value / target) * 100 + '%',
-                            background: getColor(value, target_min, target_max),
+                            background: getColor(
+                                value,
+                                target_min,
+                                target_max ?? 9999
+                            ),
                         }}
                     />
                 )}
