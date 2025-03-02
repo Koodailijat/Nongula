@@ -56,32 +56,33 @@ export function DashboardRoute() {
                 <Streak />
             </div>
             <div className="dashboard__content">
-                <CircularProgressBar
-                    value={currentDayCalories}
-                    heading="Calories"
-                    isLoading={userQuery.isLoading}
-                    target={targetCaloriesMin}
-                    targetText={`${targetCaloriesMin}-${targetCaloriesMax}`}
-                />
-
-                <Calendar
-                    data={foodsQuery.data ? foodsQuery.data : []}
-                    state={calendarState}
-                    locale={locale.locale}
-                    firstDayOfWeek="mon">
-                    {({ data, date, state, key }) => (
-                        <CustomCalendarCell
-                            data={data}
-                            date={date}
-                            state={state}
-                            target_min={targetCaloriesMin}
-                            target_max={targetCaloriesMax}
-                            key={key}
-                            colorblind={isColorblind}
-                        />
-                    )}
-                </Calendar>
-                <div className="dashboard__button-container">
+                <div className="dashboard__widgets">
+                    <CircularProgressBar
+                        value={currentDayCalories}
+                        heading="Calories"
+                        isLoading={userQuery.isLoading}
+                        target={targetCaloriesMin}
+                        targetText={`${targetCaloriesMin}-${targetCaloriesMax}`}
+                    />
+                    <Calendar
+                        data={foodsQuery.data ? foodsQuery.data : []}
+                        state={calendarState}
+                        locale={locale.locale}
+                        firstDayOfWeek="mon">
+                        {({ data, date, state, key }) => (
+                            <CustomCalendarCell
+                                data={data}
+                                date={date}
+                                state={state}
+                                target_min={targetCaloriesMin}
+                                target_max={targetCaloriesMax}
+                                key={key}
+                                colorblind={isColorblind}
+                            />
+                        )}
+                    </Calendar>
+                </div>
+                <div className="dashboard__buttons">
                     <Button
                         onPress={() => navigate(`/modify/${ISODate}`)}
                         icon={<PlusIcon size="16" />}>

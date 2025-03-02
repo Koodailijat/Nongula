@@ -42,27 +42,31 @@ export function LoginRoute() {
     };
 
     return (
-        <Form className="loginform" onSubmit={handleSubmit(onSubmit)}>
-            <Heading level={1}>Login</Heading>
-            <TextField
-                placeholder="Email"
-                icon={<User />}
-                type="email"
-                label="Email"
-                {...register('email')}
-                errorText={errors.email?.message}
-                onChange={(email) => setValue('email', email)}
-            />
-            <TextField
-                placeholder="Password"
-                icon={<Lock />}
-                type="password"
-                label="Password"
-                {...register('password')}
-                errorText={errors.password?.message}
-                onChange={(password) => setValue('password', password)}
-            />
-            <Button type="submit">Login</Button>
-        </Form>
+        <div className="login-route">
+            <Form
+                className="login-route__form"
+                onSubmit={handleSubmit(onSubmit)}>
+                <Heading level={1}>Login</Heading>
+                <TextField
+                    placeholder="Email"
+                    icon={<User />}
+                    type="email"
+                    label="Email"
+                    {...register('email')}
+                    errorText={errors.email?.message}
+                    onChange={(email) => setValue('email', email)}
+                />
+                <TextField
+                    placeholder="Password"
+                    icon={<Lock />}
+                    type="password"
+                    label="Password"
+                    {...register('password')}
+                    errorText={errors.password?.message}
+                    onChange={(password) => setValue('password', password)}
+                />
+                <Button type="submit">Login</Button>
+            </Form>
+        </div>
     );
 }

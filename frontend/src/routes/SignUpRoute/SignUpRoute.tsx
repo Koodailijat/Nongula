@@ -46,38 +46,42 @@ export function SignUpRoute() {
     };
 
     return (
-        <Form className="signupform" onSubmit={handleSubmit(onSubmit)}>
-            <Heading level={1}>Sign up</Heading>
-            <TextField
-                placeholder="email"
-                icon={<User />}
-                type="email"
-                label="Email"
-                {...register('email')}
-                errorText={errors.email?.message}
-                onChange={(email) => setValue('email', email)}
-            />
-            <TextField
-                placeholder="Password"
-                icon={<Lock />}
-                type="password"
-                label="Password"
-                {...register('password')}
-                errorText={errors.password?.message}
-                onChange={(password) => setValue('password', password)}
-            />
-            <TextField
-                placeholder="Confirm password"
-                icon={<Lock />}
-                type="password"
-                label="Confirm password"
-                {...register('confirmPassword')}
-                errorText={errors.confirmPassword?.message}
-                onChange={(confirmPassword) =>
-                    setValue('confirmPassword', confirmPassword)
-                }
-            />
-            <Button type="submit">Sign Up</Button>
-        </Form>
+        <div className="signup-route">
+            <Form
+                className="signup-route__form"
+                onSubmit={handleSubmit(onSubmit)}>
+                <Heading level={1}>Sign up</Heading>
+                <TextField
+                    placeholder="email"
+                    icon={<User />}
+                    type="email"
+                    label="Email"
+                    {...register('email')}
+                    errorText={errors.email?.message}
+                    onChange={(email) => setValue('email', email)}
+                />
+                <TextField
+                    placeholder="Password"
+                    icon={<Lock />}
+                    type="password"
+                    label="Password"
+                    {...register('password')}
+                    errorText={errors.password?.message}
+                    onChange={(password) => setValue('password', password)}
+                />
+                <TextField
+                    placeholder="Confirm password"
+                    icon={<Lock />}
+                    type="password"
+                    label="Confirm password"
+                    {...register('confirmPassword')}
+                    errorText={errors.confirmPassword?.message}
+                    onChange={(confirmPassword) =>
+                        setValue('confirmPassword', confirmPassword)
+                    }
+                />
+                <Button type="submit">Sign Up</Button>
+            </Form>
+        </div>
     );
 }

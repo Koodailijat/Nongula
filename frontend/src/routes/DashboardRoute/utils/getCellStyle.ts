@@ -58,15 +58,13 @@ export function getCellStyle(
     value: number,
     min: number,
     max: number,
-    isSelected: boolean,
     colorblind?: boolean
 ): CSSProperties {
     if (value) {
         return {
             ...getBackground(value, min, max, colorblind),
-            outline: isSelected ? '4px solid black' : 'none',
         };
     }
 
-    return { outline: isSelected ? '4px solid black' : 'none' };
+    return {};
 }

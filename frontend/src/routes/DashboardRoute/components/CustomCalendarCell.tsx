@@ -3,7 +3,17 @@ import { FoodOutputDto } from '../../../types/FoodDto.ts';
 import { useMemo, useRef } from 'react';
 import { useCalendarCell } from 'react-aria';
 import { isEqual } from 'date-fns';
-import { getCellStyle } from '../utils/getCellStyle.ts';
+
+function getColorMode(value: number, min: number, max: number) {
+    if (value < 0.2) {
+        return 'white';
+    } else if (value < min) {
+        return 'yellow';
+    } else if (value < max) {
+        return 'green';
+    }
+    return 'red';
+}
 
 interface CustomCalendarCellProps<T> extends CalendarCellProps<T> {
     target_min: number;
@@ -48,16 +58,11 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 {...buttonProps}
                 ref={ref}
                 hidden={isOutsideVisibleRange}
-                className={`calendar-cell ${isSelected ? 'selected' : ''} ${
-                    isDisabled ? 'disabled' : ''
-                } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(
-                    value,
-                    target_min,
-                    target_max,
-                    isSelected,
-                    colorblind
-                )}>
+                data-colorblind={colorblind}
+                data-selected={isSelected}
+                data-disabled={isDisabled}
+                data-unavailable={isUnavailable}
+                className={`calendar-cell ${getColorMode(value, target_min, target_max)}`}>
                 {formattedDate}
             </div>
         </td>

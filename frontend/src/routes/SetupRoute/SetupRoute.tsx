@@ -45,11 +45,11 @@ export function SetupRoute() {
     };
 
     return (
-        <div className="setup">
-            <div className="setup__header">
-                <Heading level={1}>Activity information</Heading>
-            </div>
-            <Form className="setup__content" onSubmit={handleSubmit(onSubmit)}>
+        <div className="setup-route">
+            <Form
+                className="setup-route__form"
+                onSubmit={handleSubmit(onSubmit)}>
+                <Heading level={1}>Setup account</Heading>
                 <TextField
                     label="Age"
                     placeholder="Age"
