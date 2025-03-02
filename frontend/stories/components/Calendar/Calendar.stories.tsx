@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar, CalendarCellProps } from './Calendar.tsx';
 import { useNongulaCalendarState } from './useNongulaCalendarState.tsx';
-import { getCellStyle } from '../../../src/routes/dashboardroute/utils/getCellStyle.ts';
+import { getCellStyle } from '../../../src/routes/DashboardRoute/utils/getCellStyle.ts';
 import { useMemo, useRef } from 'react';
 import { useCalendarCell } from 'react-aria';
 import { isEqual } from 'date-fns';
@@ -16,14 +16,16 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 interface ExampleCalendarCellProps<T> extends CalendarCellProps<T> {
-    target: number;
+    target_min: number;
+    target_max: number;
 }
 
 function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
     state,
     date,
     data,
-    target,
+    target_min,
+    target_max,
 }: ExampleCalendarCellProps<T>) {
     const ref = useRef(null);
     const {
@@ -36,7 +38,7 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
         formattedDate,
     } = useCalendarCell({ date }, state, ref);
 
-    const targetRatio = useMemo(
+    const value = useMemo(
         () =>
             data
                 .filter((food) => isEqual(food.date, date.toString()))
@@ -44,8 +46,8 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                     (previousValue, currentValue) =>
                         previousValue + currentValue.calories,
                     0
-                ) / target,
-        [data, date, target]
+                ),
+        [data, date]
     );
 
     return (
@@ -57,7 +59,7 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 className={`calendar-cell ${isSelected ? 'selected' : ''} ${
                     isDisabled ? 'disabled' : ''
                 } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(targetRatio, isSelected)}>
+                style={getCellStyle(value, target_min, target_max, isSelected)}>
                 {formattedDate}
             </div>
         </td>
@@ -108,7 +110,8 @@ export const Default: Story = {
                         data={data}
                         date={date}
                         state={state}
-                        target={2150}
+                        target_min={2150}
+                        target_max={2650}
                         key={key}
                     />
                 )}

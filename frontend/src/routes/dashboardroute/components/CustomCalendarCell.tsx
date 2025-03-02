@@ -28,7 +28,7 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
         formattedDate,
     } = useCalendarCell({ date }, state, ref);
 
-    const targetRatio = useMemo(
+    const value = useMemo(
         () =>
             data
                 .filter((food) => isEqual(food.date, date.toString()))
@@ -49,12 +49,7 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 className={`calendar-cell ${isSelected ? 'selected' : ''} ${
                     isDisabled ? 'disabled' : ''
                 } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(
-                    targetRatio,
-                    target_min,
-                    target_max,
-                    isSelected
-                )}>
+                style={getCellStyle(value, target_min, target_max, isSelected)}>
                 {formattedDate}
             </div>
         </td>
