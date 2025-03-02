@@ -17,16 +17,44 @@
         justify-content: center;
         align-items: center;
         gap: 2rem;
+
+        .dashboard__widgets {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
     }
     .custom-modal__actions {
         display: flex;
         flex-direction: row;
         gap: 1rem;
     }
-    .dashboard__button-container {
+    .dashboard__buttons {
         display: flex;
         flex-direction: column;
         gap: 16px;
         width: 100%;
+    }
+}
+
+@media (min-width: 500px) {
+    .dashboard {
+        justify-content: center;
+        .dashboard__content {
+            margin-bottom: 50px;
+            .dashboard__widgets {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                gap: 30px;
+            }
+
+            .dashboard__buttons {
+                display: flex;
+                flex-direction: row;
+            }
+        }
     }
 }

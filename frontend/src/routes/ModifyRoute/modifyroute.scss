@@ -46,3 +46,13 @@
         gap: 0.5rem;
     }
 }
+
+@media (min-width: 500px) {
+    .modify-route {
+        justify-content: center;
+        .modify-route__content {
+            margin-bottom: 50px;
+            width: 425px;
+        }
+    }
+}

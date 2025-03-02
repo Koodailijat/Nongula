@@ -10,6 +10,7 @@ import {
     useUserQuery,
 } from '../../../api/queries/userQueries.tsx';
 import { useNavigate } from 'react-router';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface ChangeTargetCaloriesModalProps {
     isOpen: boolean;
@@ -23,6 +24,7 @@ export function ChangeTargetCaloriesModal({
     const navigate = useNavigate();
     const { data } = useUserQuery();
     const userMutation = useUserMutation();
+    const isDesktopMode = useMediaQuery('(min-width: 500px)');
     const [targetCaloriesMin, setTargetCaloriesMin] = useState('');
     const [targetCaloriesMax, setTargetCaloriesMax] = useState('');
 
@@ -61,7 +63,11 @@ export function ChangeTargetCaloriesModal({
     }
 
     return (
-        <Modal aria-label="Default modal" isOpen={isOpen} onChange={onChange}>
+        <Modal
+            aria-label="Default modal"
+            isOpen={isOpen}
+            onChange={onChange}
+            size={isDesktopMode ? 'medium' : 'small'}>
             <div className="target-modal">
                 <Heading level={2} slot="title">
                     Change targets

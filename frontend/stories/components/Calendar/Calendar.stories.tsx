@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Calendar, CalendarCellProps } from './Calendar.tsx';
 import { useNongulaCalendarState } from './useNongulaCalendarState.tsx';
-import { CSSProperties, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useCalendarCell } from 'react-aria';
 import { isEqual } from 'date-fns';
 import { FoodOutputDto } from '../../../src/types/FoodDto.ts';
@@ -15,75 +15,15 @@ const meta: Meta<typeof Calendar> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-function getBackground(
-    value: number,
-    min: number,
-    max: number,
-    colorblind?: boolean
-) {
+function getColorMode(value: number, min: number, max: number) {
     if (value < 0.2) {
-        return {
-            backgroundColor: '#ffffff',
-        };
+        return 'white';
     } else if (value < min) {
-        if (colorblind) {
-            return {
-                backgroundColor: '#bcba29',
-                opacity: 0.8,
-                backgroundImage:
-                    'linear-gradient(0deg, #bcba29 50%, #717019 50%)',
-                backgroundSize: '8px 8px',
-            };
-        }
-        return {
-            backgroundColor: '#bcba29',
-        };
+        return 'yellow';
     } else if (value < max) {
-        if (colorblind) {
-            return {
-                backgroundColor: '#008537',
-                opacity: 0.8,
-                backgroundImage:
-                    'linear-gradient(135deg, #005021 25%, transparent 25%), linear-gradient(225deg, #005021 25%, transparent 25%), linear-gradient(45deg, #005021 25%, transparent 25%), linear-gradient(315deg, #005021 25%, #008537 25%)',
-                backgroundPosition: '8px 0, 8px 0, 0 0, 0 0',
-                backgroundSize: '16px 16px',
-                backgroundRepeat: 'repeat',
-            };
-        }
-        return {
-            backgroundColor: '#008537',
-        };
+        return 'green';
     }
-    if (colorblind) {
-        return {
-            backgroundColor: '#c23b26',
-            opacity: 0.8,
-            backgroundImage:
-                'repeating-linear-gradient(45deg, #742317 25%, transparent 25%, transparent 75%, #742317 75%, #742317), repeating-linear-gradient(45deg, #742317 25%, #c23b26 25%, #c23b26 75%, #742317 75%, #742317)',
-            backgroundPosition: '0 0, 8px 8px',
-            backgroundSize: '16px 16px',
-        };
-    }
-    return {
-        backgroundColor: '#c23b26',
-    };
-}
-
-function getCellStyle(
-    value: number,
-    min: number,
-    max: number,
-    isSelected: boolean,
-    colorblind?: boolean
-): CSSProperties {
-    if (value) {
-        return {
-            ...getBackground(value, min, max, colorblind),
-            outline: isSelected ? '4px solid black' : 'none',
-        };
-    }
-
-    return { outline: isSelected ? '4px solid black' : 'none' };
+    return 'red';
 }
 
 interface ExampleCalendarCellProps<T> extends CalendarCellProps<T> {
@@ -129,16 +69,11 @@ function ExampleCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 {...buttonProps}
                 ref={ref}
                 hidden={isOutsideVisibleRange}
-                className={`calendar-cell ${isSelected ? 'selected' : ''} ${
-                    isDisabled ? 'disabled' : ''
-                } ${isUnavailable ? 'unavailable' : ''}`}
-                style={getCellStyle(
-                    value,
-                    target_min,
-                    target_max,
-                    isSelected,
-                    colorblind
-                )}>
+                data-colorblind={colorblind}
+                data-selected={isSelected}
+                data-disabled={isDisabled}
+                data-unavailable={isUnavailable}
+                className={`calendar-cell ${getColorMode(value, target_min, target_max)}`}>
                 {formattedDate}
             </div>
         </td>
@@ -188,18 +123,29 @@ export const Default: Story = {
         }, []);
 
         return (
-            <Calendar data={exampleData} state={state} locale={locale.locale}>
-                {({ data, date, state, key }) => (
-                    <ExampleCalendarCell
-                        data={data}
-                        date={date}
-                        state={state}
-                        target_min={2150}
-                        target_max={2650}
-                        key={key}
-                    />
-                )}
-            </Calendar>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}>
+                <Calendar
+                    data={exampleData}
+                    state={state}
+                    locale={locale.locale}>
+                    {({ data, date, state, key }) => (
+                        <ExampleCalendarCell
+                            data={data}
+                            date={date}
+                            state={state}
+                            target_min={2150}
+                            target_max={2650}
+                            key={key}
+                        />
+                    )}
+                </Calendar>
+            </div>
         );
     },
 };
@@ -214,19 +160,30 @@ export const Colorblind: Story = {
         }, []);
 
         return (
-            <Calendar data={exampleData} state={state} locale={locale.locale}>
-                {({ data, date, state, key }) => (
-                    <ExampleCalendarCell
-                        data={data}
-                        date={date}
-                        state={state}
-                        target_min={2150}
-                        target_max={2650}
-                        key={key}
-                        colorblind={true}
-                    />
-                )}
-            </Calendar>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}>
+                <Calendar
+                    data={exampleData}
+                    state={state}
+                    locale={locale.locale}>
+                    {({ data, date, state, key }) => (
+                        <ExampleCalendarCell
+                            data={data}
+                            date={date}
+                            state={state}
+                            target_min={2150}
+                            target_max={2650}
+                            key={key}
+                            colorblind={true}
+                        />
+                    )}
+                </Calendar>
+            </div>
         );
     },
 };

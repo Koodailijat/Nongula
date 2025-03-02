@@ -1,4 +1,5 @@
 import { useProgressBar } from 'react-aria';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface CircularProgressBarProps {
     /** Value to show **/
@@ -25,6 +26,7 @@ export function CircularProgressBar({
     targetText,
     isLoading,
 }: CircularProgressBarProps) {
+    const isDesktopMode = useMediaQuery('(min-width: 500px)');
     const targetValue = target ?? 100;
     const targetTextValue = targetText ?? target ?? '';
     const { progressBarProps } = useProgressBar({
@@ -35,29 +37,29 @@ export function CircularProgressBar({
     });
     return (
         <svg
-            width="300"
-            height="300"
-            viewBox="0 0 300 300"
+            width={isDesktopMode ? '425' : '300'}
+            height={isDesktopMode ? '425' : '300'}
+            viewBox={isDesktopMode ? '0 0 425 425' : '0 0 300 300'}
             {...progressBarProps}>
             <circle
-                r="105"
-                cx="150"
-                cy="150"
+                r={isDesktopMode ? '180' : '105'}
+                cx={isDesktopMode ? '212.5' : '150'}
+                cy={isDesktopMode ? '212.5' : '150'}
                 fill="transparent"
-                strokeWidth="2rem"
+                strokeWidth={isDesktopMode ? '3rem' : '2rem'}
                 stroke="#E1E1E1"
             />
             {!isLoading && (
                 <circle
-                    r="105"
-                    cx="150"
-                    cy="150"
+                    r={isDesktopMode ? '180' : '105'}
+                    cx={isDesktopMode ? '212.5' : '150'}
+                    cy={isDesktopMode ? '212.5' : '150'}
                     fill="transparent"
                     stroke={getColor(value / targetValue)}
                     pathLength="100"
-                    strokeWidth="1.25rem"
+                    strokeWidth={isDesktopMode ? '2rem' : '1.25rem'}
                     strokeDasharray={`${(value / targetValue) * 100} ${100 - (value / targetValue) * 100}`}
-                    strokeDashoffset={75}
+                    strokeDashoffset="75"
                     strokeLinecap="round"
                     className="circular-progress-bar__progress"
                 />
