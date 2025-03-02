@@ -9,6 +9,7 @@ import {
     useUserMutation,
     useUserQuery,
 } from '../../../api/queries/userQueries.tsx';
+import { useNavigate } from 'react-router';
 
 interface ChangeTargetCaloriesModalProps {
     isOpen: boolean;
@@ -19,13 +20,16 @@ export function ChangeTargetCaloriesModal({
     isOpen,
     setIsOpen,
 }: ChangeTargetCaloriesModalProps) {
+    const navigate = useNavigate();
     const { data } = useUserQuery();
     const userMutation = useUserMutation();
-    const [targetCalories, setTargetCalories] = useState('');
+    const [targetCaloriesMin, setTargetCaloriesMin] = useState('');
+    const [targetCaloriesMax, setTargetCaloriesMax] = useState('');
 
     useEffect(() => {
         if (data) {
-            setTargetCalories(data.target_calories_min.toString());
+            setTargetCaloriesMin(data.target_calories_min.toString());
+            setTargetCaloriesMax(data.target_calories_max.toString());
         }
     }, [data]);
 
@@ -34,10 +38,11 @@ export function ChangeTargetCaloriesModal({
     }
 
     function handleSubmit() {
-        if (Number(targetCalories) > 0) {
+        if (Number(targetCaloriesMin) > 0) {
             userMutation.mutate(
                 {
-                    target_calories_min: Number(targetCalories),
+                    target_calories_min: Number(targetCaloriesMin),
+                    target_calories_max: Number(targetCaloriesMax),
                 },
                 {
                     onSuccess: () => {
@@ -59,13 +64,20 @@ export function ChangeTargetCaloriesModal({
         <Modal aria-label="Default modal" isOpen={isOpen} onChange={onChange}>
             <div className="target-modal">
                 <Heading level={2} slot="title">
-                    Change target
+                    Change targets
                 </Heading>
                 <TextField
-                    value={targetCalories}
-                    onChange={setTargetCalories}
-                    label={'Target calories'}
-                    placeholder={'Target calories'}
+                    value={targetCaloriesMin}
+                    onChange={setTargetCaloriesMin}
+                    label={'Minimum target calories'}
+                    placeholder={'Minimum target calories'}
+                    isDisabled={userMutation.isPending}
+                />
+                <TextField
+                    value={targetCaloriesMax}
+                    onChange={setTargetCaloriesMax}
+                    label={'Max target calories'}
+                    placeholder={'Max target calories'}
                     isDisabled={userMutation.isPending}
                 />
                 <div className="target-modal__buttons">
@@ -74,6 +86,11 @@ export function ChangeTargetCaloriesModal({
                         onPress={handleSubmit}
                         icon={<RefreshCw color="white" size="16" />}>
                         Update
+                    </Button>
+                    <Button
+                        onPress={() => navigate('/setup')}
+                        variant="secondary">
+                        Setup
                     </Button>
                     <Button
                         isPending={userMutation.isPending}

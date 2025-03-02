@@ -58,6 +58,7 @@ export function DashboardRoute() {
                     heading="Calories"
                     isLoading={userQuery.isLoading}
                     target={targetCaloriesMin}
+                    targetText={`${targetCaloriesMin}-${targetCaloriesMax}`}
                 />
                 <Calendar
                     data={foodsQuery.data ? foodsQuery.data : []}
@@ -84,7 +85,7 @@ export function DashboardRoute() {
                     <Button
                         variant="secondary"
                         onPress={() => setIsTargetModalOpen(true)}>
-                        Change target
+                        Change targets
                     </Button>
                 </div>
             </div>

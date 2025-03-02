@@ -7,6 +7,7 @@ interface CircularProgressBarProps {
     heading?: string;
     /** Target value, use this if you want to use custom target, defaults to 100 **/
     target?: number;
+    targetText?: string;
     isLoading?: boolean;
 }
 
@@ -21,9 +22,11 @@ export function CircularProgressBar({
     value,
     heading,
     target,
+    targetText,
     isLoading,
 }: CircularProgressBarProps) {
     const targetValue = target ?? 100;
+    const targetTextValue = targetText ?? target ?? '';
     const { progressBarProps } = useProgressBar({
         minValue: 0,
         maxValue: targetValue,
@@ -80,7 +83,7 @@ export function CircularProgressBar({
                 y={!heading && target ? '60%' : '62%'}
                 textAnchor="middle"
                 className="circular-progress-bar__text">
-                {target ? `/ ${target ?? `${target}`}` : ''}
+                {targetTextValue}
             </text>
         </svg>
     );
