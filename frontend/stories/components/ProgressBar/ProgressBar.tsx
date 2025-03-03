@@ -3,19 +3,21 @@ import {
     Label as RALabel,
 } from 'react-aria-components';
 
-function getColor(value: number) {
-    if (value < 1.1) {
-        return '#519a58';
-    } else if (value < 1.3) {
+function getColor(value: number, min: number, max: number) {
+    if (value === 0) {
+        return 'transparent';
+    } else if (value < min) {
         return '#bcba29';
-    } else if (value < 1.5) {
-        return '#c23b26';
+    } else if (value < max) {
+        return '#519A58';
     }
-    return '#941515';
+    return '#c23b26';
 }
+
 interface ProgressBarProps {
     label: string;
-    targetValue?: number;
+    target_min: number;
+    target_max?: number;
     value: number;
     valueText: string;
     isLoading?: boolean;
@@ -25,11 +27,12 @@ interface ProgressBarProps {
 export const ProgressBar = ({
     label,
     value,
-    targetValue,
+    target_min,
+    target_max,
     valueText,
     isLoading,
 }: ProgressBarProps) => {
-    const target = targetValue ?? 100;
+    const target = target_min ?? 100;
     return (
         <RAProgressBar value={value} className="progress-bar">
             <RALabel>{label}</RALabel>
@@ -42,7 +45,11 @@ export const ProgressBar = ({
                         className="progress-bar__bar-fill"
                         style={{
                             width: (value / target) * 100 + '%',
-                            background: getColor(value / target),
+                            background: getColor(
+                                value,
+                                target_min,
+                                target_max ?? Infinity
+                            ),
                         }}
                     />
                 )}

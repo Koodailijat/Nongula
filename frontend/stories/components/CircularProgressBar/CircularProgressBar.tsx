@@ -7,33 +7,38 @@ interface CircularProgressBarProps {
     /** Heading text **/
     heading?: string;
     /** Target value, use this if you want to use custom target, defaults to 100 **/
-    target?: number;
+    target_min?: number;
+    target_max?: number;
     targetText?: string;
     isLoading?: boolean;
 }
 
-function getColor(value: number) {
-    if (value < 1.3) {
+function getColor(value: number, min: number, max: number) {
+    if (value === 0) {
+        return 'transparent';
+    } else if (value < min) {
+        return '#bcba29';
+    } else if (value < max) {
         return '#519A58';
     }
-    return '#941515';
+    return '#c23b26';
 }
 
 export function CircularProgressBar({
     value,
     heading,
-    target,
+    target_min,
+    target_max,
     targetText,
     isLoading,
 }: CircularProgressBarProps) {
     const isDesktopMode = useMediaQuery('(min-width: 500px)');
-    const targetValue = target ?? 100;
-    const targetTextValue = targetText ?? target ?? '';
+    const target = target_min ?? 100;
     const { progressBarProps } = useProgressBar({
         minValue: 0,
-        maxValue: targetValue,
+        maxValue: target,
         value,
-        label: `Progress bar with target value of ${targetValue} and current value of ${value}`,
+        label: `Progress bar with target value of ${target} and current value of ${value}`,
     });
     return (
         <svg
@@ -55,10 +60,14 @@ export function CircularProgressBar({
                     cx={isDesktopMode ? '212.5' : '150'}
                     cy={isDesktopMode ? '212.5' : '150'}
                     fill="transparent"
-                    stroke={getColor(value / targetValue)}
+                    stroke={getColor(
+                        value,
+                        target_min ?? 100,
+                        target_max ?? 100
+                    )}
                     pathLength="100"
                     strokeWidth={isDesktopMode ? '2rem' : '1.25rem'}
-                    strokeDasharray={`${(value / targetValue) * 100} ${100 - (value / targetValue) * 100}`}
+                    strokeDasharray={`${(value / target) * 100} ${100 - (value / target) * 100}`}
                     strokeDashoffset="75"
                     strokeLinecap="round"
                     className="circular-progress-bar__progress"
@@ -85,7 +94,7 @@ export function CircularProgressBar({
                 y={!heading && target ? '60%' : '62%'}
                 textAnchor="middle"
                 className="circular-progress-bar__text">
-                {targetTextValue}
+                {targetText}
             </text>
         </svg>
     );

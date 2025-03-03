@@ -2,7 +2,9 @@ import { CalendarCellProps } from '../../../../stories/components/Calendar/Calen
 import { FoodOutputDto } from '../../../types/FoodDto.ts';
 import { useMemo, useRef } from 'react';
 import { useCalendarCell } from 'react-aria';
-import { isEqual } from 'date-fns';
+import { format, isEqual } from 'date-fns';
+import { useSelectedDate } from '../../../../stories/components/Calendar/useSelectedDate.tsx';
+import { getLocalTimeZone } from '@internationalized/date';
 
 function getColorMode(value: number, min: number, max: number) {
     if (value < 0.2) {
@@ -40,6 +42,16 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
         formattedDate,
     } = useCalendarCell({ date }, state, ref);
 
+    const selectedDate = useSelectedDate(state);
+
+    const isTrulySelected = useMemo(
+        () =>
+            format(date.toDate(getLocalTimeZone()), 'yyyy-MM-dd') ===
+                format(selectedDate, 'yyyy-MM-dd') || isSelected,
+
+        [date, isSelected, selectedDate]
+    );
+
     const value = useMemo(
         () =>
             data
@@ -59,7 +71,7 @@ export function CustomCalendarCell<T extends Omit<FoodOutputDto, 'userId'>>({
                 ref={ref}
                 hidden={isOutsideVisibleRange}
                 data-colorblind={colorblind}
-                data-selected={isSelected}
+                data-selected={isTrulySelected}
                 data-disabled={isDisabled}
                 data-unavailable={isUnavailable}
                 className={`calendar-cell ${getColorMode(value, target_min, target_max)}`}>
