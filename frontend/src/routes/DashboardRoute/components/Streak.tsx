@@ -1,7 +1,15 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { Badge } from '../../../../stories/components/Badge/Badge.tsx';
+import { useStreakQuery } from '../../../api/queries/streakQueries.tsx';
 
 export function Streak() {
-    const [streakCount] = useState(0);
+    const streakQuery = useStreakQuery();
+
+    const streakCount = useMemo(
+        () =>
+            streakQuery.data?.streakCount ? streakQuery.data.streakCount : 0,
+        [streakQuery.data]
+    );
+
     return <>{streakCount > 2 && <Badge>{streakCount}🔥</Badge>}</>;
 }

@@ -29,8 +29,10 @@ export function ChangeTargetCaloriesModal({
     const [targetCaloriesMax, setTargetCaloriesMax] = useState('');
 
     useEffect(() => {
-        if (data) {
+        if (data?.target_calories_min) {
             setTargetCaloriesMin(data.target_calories_min.toString());
+        }
+        if (data?.target_calories_max) {
             setTargetCaloriesMax(data.target_calories_max.toString());
         }
     }, [data]);
