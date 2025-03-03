@@ -82,7 +82,11 @@ export const getWeekly = [
                 return;
             }
 
-            const parsedDate = parseISO(date);
+            let parsedDate: Date;
+
+            if (typeof date === 'string') {
+                parsedDate = parseISO(date);
+            }
             const monday = startOfWeek(parsedDate, { weekStartsOn: 1 }); // Monday
             const sunday = endOfWeek(parsedDate, { weekStartsOn: 1 }); // Sunday
 
