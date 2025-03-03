@@ -12,3 +12,12 @@ export interface FoodInputDto {
     calories: number;
     name: string;
 }
+
+export interface WeeklyFoodInputDto {
+    date: string;
+}
+
+export interface WeeklyFoodOutputDto {
+    weeklyCalories: number;
+    weeklyTarget: number;
+}

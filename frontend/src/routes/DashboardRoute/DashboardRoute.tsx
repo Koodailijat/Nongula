@@ -11,7 +11,10 @@ import { useSelectedDate } from '../../../stories/components/Calendar/useSelecte
 import { Streak } from './components/Streak.tsx';
 import { ChangeTargetCaloriesModal } from './components/ChangeTargetCaloriesModal.tsx';
 import { useUserQuery } from '../../api/queries/userQueries.tsx';
-import { useFoodsQuery } from '../../api/queries/foodQueries.tsx';
+import {
+    useFoodsQuery,
+    useWeeklyFoodsQuery,
+} from '../../api/queries/foodQueries.tsx';
 import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
 import { getVisibleRange } from './utils/getVisibleRange.ts';
 import { CustomCalendarCell } from './components/CustomCalendarCell.tsx';
@@ -21,6 +24,7 @@ import { TopNavigation } from '../../components/TopNavigation.tsx';
 import { A11yToggleButton } from './components/A11yToggleButton.tsx';
 import { useIsDesktopMode } from '../../hooks/useIsDesktopMode.tsx';
 import { useTargetText } from '../../hooks/useTargetText.tsx';
+import { ProgressBar } from '../../../stories/components/ProgressBar/ProgressBar.tsx';
 
 export function DashboardRoute() {
     const navigate = useNavigate();
@@ -37,6 +41,7 @@ export function DashboardRoute() {
     const foodsQuery = useFoodsQuery(
         getVisibleRange(calendarState.visibleRange)
     );
+    const weeklyFoodsQuery = useWeeklyFoodsQuery({ date: ISODate });
     const currentDayCalories = useCurrentDayCalories(ISODate, foodsQuery.data);
 
     const targetCaloriesMin = useMemo(
@@ -52,6 +57,22 @@ export function DashboardRoute() {
                 ? userQuery.data.target_calories_max
                 : 0,
         [userQuery.data]
+    );
+
+    const weeklyTarget = useMemo(
+        () =>
+            weeklyFoodsQuery.data?.weeklyTarget
+                ? weeklyFoodsQuery.data.weeklyTarget
+                : 0,
+        [weeklyFoodsQuery.data]
+    );
+
+    const weeklyCalories = useMemo(
+        () =>
+            weeklyFoodsQuery.data?.weeklyCalories
+                ? weeklyFoodsQuery.data.weeklyCalories
+                : 0,
+        [weeklyFoodsQuery.data]
     );
 
     const targetText = useTargetText(
@@ -90,14 +111,23 @@ export function DashboardRoute() {
                 ) : null}
                 <div className="dashboard__content">
                     <div className="dashboard__widgets">
-                        <CircularProgressBar
-                            value={currentDayCalories}
-                            heading="Calories"
-                            isLoading={userQuery.isLoading}
-                            target_min={targetCaloriesMin}
-                            target_max={targetCaloriesMax}
-                            targetText={targetText}
-                        />
+                        <div>
+                            <CircularProgressBar
+                                value={currentDayCalories}
+                                heading="Calories"
+                                isLoading={userQuery.isLoading}
+                                target_min={targetCaloriesMin}
+                                target_max={targetCaloriesMax}
+                                targetText={targetText}
+                            />
+                            <ProgressBar
+                                label="Weekly calories"
+                                target_min={weeklyTarget}
+                                value={weeklyCalories}
+                                valueText={`${weeklyCalories} / ${weeklyTarget} kcals`}
+                            />
+                        </div>
+
                         <Calendar
                             data={foodsQuery.data ? foodsQuery.data : []}
                             state={calendarState}
