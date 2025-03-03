@@ -5,7 +5,7 @@ import { Button } from '../../../stories/components/Button/Button.tsx';
 import { PlusIcon } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { format, formatISO } from 'date-fns';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNongulaCalendarState } from '../../../stories/components/Calendar/useNongulaCalendarState.tsx';
 import { useSelectedDate } from '../../../stories/components/Calendar/useSelectedDate.tsx';
 import { Streak } from './components/Streak.tsx';

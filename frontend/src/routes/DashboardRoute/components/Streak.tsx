@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Badge } from '../../../../stories/components/Badge/Badge.tsx';
-import { useStreakQuery } from '../../../api/queries/streakQueries.tsx';
+import { useStreakQuery } from '../../../api/queries/userQueries.tsx';
 
 export function Streak() {
     const streakQuery = useStreakQuery();
