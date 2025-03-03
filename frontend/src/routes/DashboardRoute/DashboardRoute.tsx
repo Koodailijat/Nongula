@@ -20,6 +20,7 @@ import { LogoutButton } from '../../components/LogoutButton.tsx';
 import { TopNavigation } from '../../components/TopNavigation.tsx';
 import { A11yToggleButton } from './components/A11yToggleButton.tsx';
 import { useIsDesktopMode } from '../../hooks/useIsDesktopMode.tsx';
+import { useTargetText } from '../../hooks/useTargetText.tsx';
 
 export function DashboardRoute() {
     const navigate = useNavigate();
@@ -51,6 +52,12 @@ export function DashboardRoute() {
                 ? userQuery.data.target_calories_max
                 : 0,
         [userQuery.data]
+    );
+
+    const targetText = useTargetText(
+        targetCaloriesMin,
+        targetCaloriesMax,
+        isDesktopMode
     );
 
     return (
@@ -87,8 +94,9 @@ export function DashboardRoute() {
                             value={currentDayCalories}
                             heading="Calories"
                             isLoading={userQuery.isLoading}
-                            target={targetCaloriesMin}
-                            targetText={`${targetCaloriesMin}-${targetCaloriesMax}`}
+                            target_min={targetCaloriesMin}
+                            target_max={targetCaloriesMax}
+                            targetText={targetText}
                         />
                         <Calendar
                             data={foodsQuery.data ? foodsQuery.data : []}

@@ -26,6 +26,7 @@ import { useUserQuery } from '../../api/queries/userQueries.tsx';
 import { FoodInputDto } from '../../types/FoodDto.ts';
 import { LogoutButton } from '../../components/LogoutButton.tsx';
 import { TopNavigation } from '../../components/TopNavigation.tsx';
+import { useTargetText } from '../../hooks/useTargetText.tsx';
 
 export function ModifyRoute() {
     const isoDateString = useParams().date;
@@ -56,6 +57,11 @@ export function ModifyRoute() {
     const foodDeleteMutation = useFoodDeleteMutation();
     const fineliQuery = useFineliQuery(search);
     const userQuery = useUserQuery();
+    const targetText = useTargetText(
+        Number(userQuery.data?.target_calories_min),
+        Number(userQuery.data?.target_calories_max),
+        true
+    );
 
     const currentDayCalories = useCurrentDayCalories(
         format(datetime, 'yyyy-MM-dd'),
@@ -121,12 +127,15 @@ export function ModifyRoute() {
                     <div className="modify-route__progress-bar">
                         <ProgressBar
                             isLoading={userQuery.isPending}
-                            label={"Today's calories"}
-                            targetValue={Number(
+                            label={'Total'}
+                            target_min={Number(
                                 userQuery.data?.target_calories_min
                             )}
+                            target_max={Number(
+                                userQuery.data?.target_calories_max
+                            )}
                             value={currentDayCalories}
-                            valueText={`${currentDayCalories} / ${userQuery.data?.target_calories_min} kcal`}
+                            valueText={`${currentDayCalories} / ${targetText} kcals`}
                         />
                     </div>
                     <SearchBar
