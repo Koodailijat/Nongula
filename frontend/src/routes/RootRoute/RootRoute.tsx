@@ -4,15 +4,19 @@ import { Heading } from '../../../stories/components/Heading/Heading.tsx';
 import { Button } from '../../../stories/components/Button/Button.tsx';
 import { Text } from '../../../stories/components/Text/Text.tsx';
 import { Scene } from './components/Scene.tsx';
+import { TopNavigation } from '../../components/TopNavigation.tsx';
+import { useIsDesktopMode } from '../../hooks/useIsDesktopMode.tsx';
 
 export function RootRoute() {
     const navigate = useNavigate();
+    const isDesktopMode = useIsDesktopMode();
     return (
         <div className="root-route__container">
-            <div className="root-route__header">
+            <TopNavigation className="root-route__header">
                 <Heading className="root-route__top-heading" level={1}>
                     Nongula
                 </Heading>
+                <div />
                 <div className="root-route__header-buttons">
                     <Button onPress={() => navigate('/signup')}>Signup</Button>
                     <Button
@@ -21,10 +25,14 @@ export function RootRoute() {
                         Login
                     </Button>
                 </div>
-            </div>
-            <div>
+            </TopNavigation>
+            <div className="root-route__page">
                 <div className="root-route__main-content">
-                    <Canvas style={{ height: '250px', width: '100%' }}>
+                    <Canvas
+                        style={{
+                            height: isDesktopMode ? '425px' : '250px',
+                            width: '100%',
+                        }}>
                         <Scene />
                     </Canvas>
                     <div className="root-route__content-wrapper">

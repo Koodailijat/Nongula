@@ -3,9 +3,13 @@ import {
     ToggleButtonProps as RAToggleButtonProps,
 } from 'react-aria-components';
 
-export const ToggleButton = ({ children, ...props }: RAToggleButtonProps) => {
+export const ToggleButton = ({
+    children,
+    className,
+    ...props
+}: RAToggleButtonProps) => {
     return (
-        <RAToggleButton {...props} className="toggle-button">
+        <RAToggleButton {...props} className={`toggle-button ${className}`}>
             {children}
         </RAToggleButton>
     );

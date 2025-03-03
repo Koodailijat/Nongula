@@ -1,7 +1,8 @@
 @import '../stories/_components.scss';
 @import './main.scss';
-@import './routes/dashboardroute/dashboardroute.scss';
-@import './routes/dashboardroute/components/changetargetcaloriesmodal.scss';
+@import './routes/DashboardRoute/dashboardroute.scss';
+@import './routes/DashboardRoute/components/changetargetcaloriesmodal.scss';
+@import './routes/DashboardRoute/components/a11togglebutton.scss';
 @import './routes/modifyroute/modifyroute.scss';
 @import './routes/modifyroute/components/addnewfoodmodal.scss';
 @import './routes/modifyroute/components/customcaloriesmodal.scss';
@@ -10,3 +11,5 @@
 @import './routes/LoginRoute/loginroute.scss';
 @import './routes/RootRoute/rootroute.scss';
 @import './routes/SetupRoute/setuproute.scss';
+@import './components/logoutbutton.scss';
+@import './components/topnavigation.scss';

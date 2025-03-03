@@ -1,7 +1,6 @@
 .root-route {
     &__top-heading {
         margin: 0;
-        background: white;
     }
 
     &__container {
@@ -10,12 +9,7 @@
     }
 
     &__header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
         border-bottom: 1px solid gray;
-        width: 100%;
-        padding: 8px 16px;
     }
 
     &__header-buttons {
@@ -27,6 +21,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+    }
+
+    &__page {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
     }
 
     &__content-wrapper {
@@ -42,5 +43,17 @@
 
     &__text {
         font-size: 1.1em;
+    }
+}
+
+@media (min-width: 500px) {
+    .root-route {
+        &__page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+        }
     }
 }

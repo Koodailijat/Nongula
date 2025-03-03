@@ -24,6 +24,8 @@ import {
 } from '../../api/queries/foodQueries.tsx';
 import { useUserQuery } from '../../api/queries/userQueries.tsx';
 import { FoodInputDto } from '../../types/FoodDto.ts';
+import { LogoutButton } from '../../components/LogoutButton.tsx';
+import { TopNavigation } from '../../components/TopNavigation.tsx';
 
 export function ModifyRoute() {
     const isoDateString = useParams().date;
@@ -108,80 +110,92 @@ export function ModifyRoute() {
 
     return (
         <div className="modify-route">
-            <Heading level={1}>{format(datetime, 'LLLL do')}</Heading>
-            <div className="modify-route__content">
-                <div className="modify-route__progress-bar">
-                    <ProgressBar
-                        isLoading={userQuery.isPending}
-                        label={"Today's calories"}
-                        targetValue={Number(
-                            userQuery.data?.target_calories_min
+            <TopNavigation>
+                <div />
+                <div />
+                <LogoutButton />
+            </TopNavigation>
+            <div className="modify-route__container">
+                <Heading level={2}>{format(datetime, 'LLLL do')}</Heading>
+                <div className="modify-route__content">
+                    <div className="modify-route__progress-bar">
+                        <ProgressBar
+                            isLoading={userQuery.isPending}
+                            label={"Today's calories"}
+                            targetValue={Number(
+                                userQuery.data?.target_calories_min
+                            )}
+                            value={currentDayCalories}
+                            valueText={`${currentDayCalories} / ${userQuery.data?.target_calories_min} kcal`}
+                        />
+                    </div>
+                    <SearchBar
+                        isLoading={fineliQuery.isFetching}
+                        onSelectionChange={handleSelection}
+                        onInputChange={(value) => setSearch(value)}
+                        placeholder="Search"
+                        items={items}
+                    />
+                    <List
+                        className="modify-route__list"
+                        items={foodItems}
+                        isLoading={foodsQuery.isPending}>
+                        {({ calories, name, id }) => (
+                            <ListItem
+                                className="modify-route__list-item"
+                                key={id}
+                                id={id}
+                                textValue={name}>
+                                <div className="modify-route__list-texts">
+                                    <Text size="large">{name}</Text>
+                                    <Text size="medium" variant="neutral">
+                                        {calories} kcal
+                                    </Text>
+                                </div>
+                                <div className="modify-route__list-actions">
+                                    <IconButton
+                                        onPress={() =>
+                                            onModifyPress({
+                                                id,
+                                                name,
+                                                calories,
+                                            })
+                                        }
+                                        icon={<Pen strokeWidth={2} />}
+                                    />
+                                    <IconButton
+                                        icon={
+                                            <Trash
+                                                strokeWidth={2}
+                                                color="red"
+                                            />
+                                        }
+                                        onPress={() => onDelete(id)}
+                                    />
+                                </div>
+                            </ListItem>
                         )}
-                        value={currentDayCalories}
-                        valueText={`${currentDayCalories} / ${userQuery.data?.target_calories_min} kcal`}
+                    </List>
+                    <Button
+                        onPress={() => setIsCustomCaloriesModalOpen(true)}
+                        icon={<PlusIcon size="16" />}>
+                        Add custom calories
+                    </Button>
+                    <CustomCaloriesModal
+                        isOpen={isCustomCaloriesModalOpen}
+                        setOpen={setIsCustomCaloriesModalOpen}
+                    />
+                    <ModifyCaloriesModal
+                        item={modifyItem}
+                        isOpen={isModifyModalOpen}
+                        setOpen={setIsModifyModalOpen}
+                    />
+                    <AddNewFoodModal
+                        isOpen={isAddModalOpen}
+                        setOpen={setIsAddModalOpen}
+                        item={selectedItem}
                     />
                 </div>
-                <SearchBar
-                    isLoading={fineliQuery.isFetching}
-                    onSelectionChange={handleSelection}
-                    onInputChange={(value) => setSearch(value)}
-                    placeholder="Search"
-                    items={items}
-                />
-                <List
-                    className="modify-route__list"
-                    items={foodItems}
-                    isLoading={foodsQuery.isPending}>
-                    {({ calories, name, id }) => (
-                        <ListItem
-                            className="modify-route__list-item"
-                            key={id}
-                            id={id}
-                            textValue={name}>
-                            <div className="modify-route__list-texts">
-                                <Text size="large">{name}</Text>
-                                <Text size="medium" variant="neutral">
-                                    {calories} kcal
-                                </Text>
-                            </div>
-                            <div className="modify-route__list-actions">
-                                <IconButton
-                                    onPress={() =>
-                                        onModifyPress({
-                                            id,
-                                            name,
-                                            calories,
-                                        })
-                                    }
-                                    icon={<Pen strokeWidth={2} />}
-                                />
-                                <IconButton
-                                    icon={<Trash strokeWidth={2} color="red" />}
-                                    onPress={() => onDelete(id)}
-                                />
-                            </div>
-                        </ListItem>
-                    )}
-                </List>
-                <Button
-                    onPress={() => setIsCustomCaloriesModalOpen(true)}
-                    icon={<PlusIcon size="16" />}>
-                    Add custom calories
-                </Button>
-                <CustomCaloriesModal
-                    isOpen={isCustomCaloriesModalOpen}
-                    setOpen={setIsCustomCaloriesModalOpen}
-                />
-                <ModifyCaloriesModal
-                    item={modifyItem}
-                    isOpen={isModifyModalOpen}
-                    setOpen={setIsModifyModalOpen}
-                />
-                <AddNewFoodModal
-                    isOpen={isAddModalOpen}
-                    setOpen={setIsAddModalOpen}
-                    item={selectedItem}
-                />
             </div>
         </div>
     );

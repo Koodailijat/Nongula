@@ -8,6 +8,7 @@ import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import './customcaloriesmodal.scss';
 import { useParams } from 'react-router';
 import { useFoodMutation } from '../../../api/queries/foodQueries.tsx';
+import { useIsDesktopMode } from '../../../hooks/useIsDesktopMode.tsx';
 
 interface CustomCaloriesModalProps {
     isOpen: boolean;
@@ -18,6 +19,7 @@ export function CustomCaloriesModal({
     isOpen,
     setOpen,
 }: CustomCaloriesModalProps) {
+    const isDesktopMode = useIsDesktopMode();
     const [selectedSegment, setSelectedSegment] = useState(0);
     const [totalCalories, setTotalCalories] = useState('0');
     const [calories, setCalories] = useState('0');
@@ -48,7 +50,8 @@ export function CustomCaloriesModal({
         <Modal
             aria-label="Custom calories modal"
             isOpen={isOpen}
-            onChange={onChange}>
+            onChange={onChange}
+            size={isDesktopMode ? 'medium' : 'small'}>
             <div className="custom-modal" aria-label="Custom calories modal">
                 <Heading level={2} slot="title">
                     Custom calories

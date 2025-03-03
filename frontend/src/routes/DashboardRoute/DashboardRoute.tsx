@@ -15,11 +15,15 @@ import { useFoodsQuery } from '../../api/queries/foodQueries.tsx';
 import { useCurrentDayCalories } from '../../hooks/useCurrentDayCalories.tsx';
 import { getVisibleRange } from './utils/getVisibleRange.ts';
 import { CustomCalendarCell } from './components/CustomCalendarCell.tsx';
-import { ToggleButton } from '../../../stories/components/ToggleButton/ToggleButton.tsx';
 import { useIsColorblindLocalStorage } from '../../hooks/useIsColorblindLocalStorage.tsx';
+import { LogoutButton } from '../../components/LogoutButton.tsx';
+import { TopNavigation } from '../../components/TopNavigation.tsx';
+import { A11yToggleButton } from './components/A11yToggleButton.tsx';
+import { useIsDesktopMode } from '../../hooks/useIsDesktopMode.tsx';
 
 export function DashboardRoute() {
     const navigate = useNavigate();
+    const isDesktopMode = useIsDesktopMode();
     const [isColorblind, setIsColorblind] = useIsColorblindLocalStorage();
     const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
     const [calendarState, locale] = useNongulaCalendarState();
@@ -50,59 +54,78 @@ export function DashboardRoute() {
     );
 
     return (
-        <div className="dashboard">
-            <div className="dashboard__header">
-                <Heading level={1}>{format(selectedDate, 'LLLL do')}</Heading>
-                <Streak />
-            </div>
-            <div className="dashboard__content">
-                <CircularProgressBar
-                    value={currentDayCalories}
-                    heading="Calories"
-                    isLoading={userQuery.isLoading}
-                    target={targetCaloriesMin}
-                    targetText={`${targetCaloriesMin}-${targetCaloriesMax}`}
+        <div className="dashboard-route">
+            <TopNavigation>
+                <A11yToggleButton
+                    isSelected={isColorblind}
+                    onChange={setIsColorblind}
                 />
-
-                <Calendar
-                    data={foodsQuery.data ? foodsQuery.data : []}
-                    state={calendarState}
-                    locale={locale.locale}
-                    firstDayOfWeek="mon">
-                    {({ data, date, state, key }) => (
-                        <CustomCalendarCell
-                            data={data}
-                            date={date}
-                            state={state}
-                            target_min={targetCaloriesMin}
-                            target_max={targetCaloriesMax}
-                            key={key}
-                            colorblind={isColorblind}
+                {isDesktopMode ? (
+                    <div />
+                ) : (
+                    <div className="dashboard__header">
+                        <Heading level={2}>
+                            {format(selectedDate, 'LLLL do')}
+                        </Heading>
+                        <Streak />
+                    </div>
+                )}
+                <LogoutButton />
+            </TopNavigation>
+            <div className="dashboard-route__container">
+                {isDesktopMode ? (
+                    <div className="dashboard__header">
+                        <Heading level={1}>
+                            {format(selectedDate, 'LLLL do')}
+                        </Heading>
+                        <Streak />
+                    </div>
+                ) : null}
+                <div className="dashboard__content">
+                    <div className="dashboard__widgets">
+                        <CircularProgressBar
+                            value={currentDayCalories}
+                            heading="Calories"
+                            isLoading={userQuery.isLoading}
+                            target={targetCaloriesMin}
+                            targetText={`${targetCaloriesMin}-${targetCaloriesMax}`}
                         />
-                    )}
-                </Calendar>
-                <div className="dashboard__button-container">
-                    <Button
-                        onPress={() => navigate(`/modify/${ISODate}`)}
-                        icon={<PlusIcon size="16" />}>
-                        Add calories
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        onPress={() => setIsTargetModalOpen(true)}>
-                        Change targets
-                    </Button>
-                    <ToggleButton
-                        isSelected={isColorblind}
-                        onChange={setIsColorblind}>
-                        Accessible colors
-                    </ToggleButton>
+                        <Calendar
+                            data={foodsQuery.data ? foodsQuery.data : []}
+                            state={calendarState}
+                            locale={locale.locale}
+                            firstDayOfWeek="mon">
+                            {({ data, date, state, key }) => (
+                                <CustomCalendarCell
+                                    data={data}
+                                    date={date}
+                                    state={state}
+                                    target_min={targetCaloriesMin}
+                                    target_max={targetCaloriesMax}
+                                    key={key}
+                                    colorblind={isColorblind}
+                                />
+                            )}
+                        </Calendar>
+                    </div>
+                    <div className="dashboard__buttons">
+                        <Button
+                            onPress={() => navigate(`/modify/${ISODate}`)}
+                            icon={<PlusIcon size="16" />}>
+                            Add calories
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            onPress={() => setIsTargetModalOpen(true)}>
+                            Change targets
+                        </Button>
+                    </div>
                 </div>
+                <ChangeTargetCaloriesModal
+                    isOpen={isTargetModalOpen}
+                    setIsOpen={setIsTargetModalOpen}
+                />
             </div>
-            <ChangeTargetCaloriesModal
-                isOpen={isTargetModalOpen}
-                setIsOpen={setIsTargetModalOpen}
-            />
         </div>
     );
 }

@@ -7,6 +7,7 @@ import { Heading } from '../../../../stories/components/Heading/Heading.tsx';
 import './customcaloriesmodal.scss';
 import { useFoodModifyMutation } from '../../../api/queries/foodQueries.tsx';
 import { FoodInputDto } from '../../../types/FoodDto.ts';
+import { useIsDesktopMode } from '../../../hooks/useIsDesktopMode.tsx';
 
 interface ModifyCaloriesModalProps {
     isOpen: boolean;
@@ -19,6 +20,7 @@ export function ModifyCaloriesModal({
     setOpen,
     item,
 }: ModifyCaloriesModalProps) {
+    const isDesktopMode = useIsDesktopMode();
     const [name, setName] = useState(item.name);
     const [calories, setCalories] = useState(item.calories.toString());
 
@@ -48,7 +50,8 @@ export function ModifyCaloriesModal({
         <Modal
             aria-label="Edit calories modal"
             isOpen={isOpen}
-            onChange={onChange}>
+            onChange={onChange}
+            size={isDesktopMode ? 'medium' : 'small'}>
             <div className="modify-modal" aria-label="Edit calories modal">
                 <Heading level={2} slot="title">
                     Edit calories

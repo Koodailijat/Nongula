@@ -2,7 +2,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 95vh;
+
+    .modify-route__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 95vh;
+    }
 
     .modify-route__content {
         display: flex;
@@ -44,5 +50,17 @@
         display: flex;
         flex-direction: row;
         gap: 0.5rem;
+    }
+}
+
+@media (min-width: 500px) {
+    .modify-route {
+        .modify-route__container {
+            justify-content: center;
+            .modify-route__content {
+                margin-bottom: 50px;
+                width: 425px;
+            }
+        }
     }
 }
