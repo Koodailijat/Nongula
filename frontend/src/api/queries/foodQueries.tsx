@@ -3,12 +3,14 @@ import { mutationKeys } from '../../constants/mutationKeys.ts';
 import {
     deleteFood,
     getFoods,
+    getWeeklyFoods,
     postFood,
     putFood,
 } from '../services/foodService.ts';
 import { queryKeys } from '../../constants/queryKeys.ts';
 import { toastQueue } from '../../../stories/components/Toast/GlobalToastRegion.tsx';
 import { queryClient } from './queryClient.ts';
+import { WeeklyFoodInputDto } from '../../types/FoodDto.ts';
 
 export function useFoodsQuery({
     startDate,
@@ -20,6 +22,13 @@ export function useFoodsQuery({
     return useQuery({
         queryFn: startDate ? () => getFoods({ startDate, endDate }) : skipToken,
         queryKey: [queryKeys.food, startDate, endDate],
+    });
+}
+
+export function useWeeklyFoodsQuery({ date }: WeeklyFoodInputDto) {
+    return useQuery({
+        queryFn: date ? () => getWeeklyFoods({ date }) : skipToken,
+        queryKey: [queryKeys.food, date],
     });
 }
 

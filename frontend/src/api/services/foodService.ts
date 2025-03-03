@@ -1,5 +1,9 @@
 import { authRequest } from './network.ts';
-import { FoodInputDto, FoodOutputDto } from '../../types/FoodDto.ts';
+import {
+    FoodInputDto,
+    FoodOutputDto,
+    WeeklyFoodOutputDto,
+} from '../../types/FoodDto.ts';
 
 export async function getFoods({
     startDate,
@@ -14,6 +18,20 @@ export async function getFoods({
         params: {
             startDate,
             endDate,
+        },
+    });
+}
+
+export async function getWeeklyFoods({
+    date,
+}: {
+    date: string;
+}): Promise<WeeklyFoodOutputDto> {
+    return authRequest({
+        method: 'GET',
+        url: 'api/foods/weekly',
+        params: {
+            date,
         },
     });
 }
