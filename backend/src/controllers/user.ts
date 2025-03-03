@@ -36,6 +36,69 @@ export const updateTargetCalories = [
     },
 ];
 
+export const getCalorieStreak = [
+    async (req, res, next) => {
+        try {
+            const userId = req.user.id;
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { target_calories_min: true },
+            });
+
+            if (!user) {
+                next(createHttpError(404, 'User not found'));
+                return;
+            }
+
+            const targetCaloriesMin = user.target_calories_min;
+            let streakCount = 0;
+            let hasMoreRecords = true;
+            let lastCheckedDate = new Date();
+
+            while (hasMoreRecords) {
+                const foodLogs = await prisma.foodLog.findMany({
+                    where: {
+                        userId: userId,
+                        date: { lte: lastCheckedDate },
+                    },
+                    orderBy: { date: 'desc' },
+                    take: 100,
+                });
+
+                if (foodLogs.length === 0) break;
+
+                let currentDate = null;
+                let dailyCalories = 0;
+
+                for (const log of foodLogs) {
+                    if (
+                        !currentDate ||
+                        log.date.toISOString().split('T')[0] !== currentDate
+                    ) {
+                        if (currentDate && dailyCalories < targetCaloriesMin) {
+                            res.status(200).json({ streakCount });
+                            return;
+                        }
+
+                        streakCount++;
+                        currentDate = log.date.toISOString().split('T')[0];
+                        dailyCalories = 0;
+                    }
+                    dailyCalories += log.calories;
+                }
+
+                lastCheckedDate = foodLogs[foodLogs.length - 1].date;
+                hasMoreRecords = foodLogs.length === 100;
+            }
+
+            res.status(200).json({ streakCount });
+            return;
+        } catch (error) {
+            next(error);
+        }
+    },
+];
+
 export const getUser = [
     async (req: Request, res: Response, next: NextFunction) => {
         try {

@@ -199,9 +199,7 @@ export const getFoodLogsByDateRange = [
             });
 
             if (!foodLogs.length) {
-                res.status(404).json({
-                    message: 'No food logs found for this date range',
-                });
+                res.status(204).json([]);
                 return;
             }
 
