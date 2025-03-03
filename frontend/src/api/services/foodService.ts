@@ -29,7 +29,7 @@ export async function getWeeklyFoods({
 }): Promise<WeeklyFoodOutputDto> {
     return authRequest({
         method: 'GET',
-        url: 'api/food/weekly',
+        url: 'api/foods/weekly',
         params: {
             date,
         },
