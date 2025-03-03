@@ -1,5 +1,6 @@
 import { body, param, validationResult, query } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
+import { startOfWeek, endOfWeek, parseISO } from 'date-fns';
 import { prisma } from '../utils/prisma.js';
 
 export const addFood = [
@@ -65,6 +66,59 @@ export const deleteFood = [
             return;
         } catch (error) {
             return next(error);
+        }
+    },
+];
+
+export const getWeekly = [
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            console.log('Received query:', req.query);
+            const userId = req.user.id; // Authenticated user ID
+            const { date } = req.query; // Get date from query params
+
+            if (!date) {
+                res.status(400).json({ message: 'Date is required' });
+                return;
+            }
+
+            const parsedDate = parseISO(date);
+            const monday = startOfWeek(parsedDate, { weekStartsOn: 1 }); // Monday
+            const sunday = endOfWeek(parsedDate, { weekStartsOn: 1 }); // Sunday
+
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { target_calories_min: true },
+            });
+
+            if (!user) {
+                res.status(404).json({ message: 'User not found' });
+                return;
+            }
+
+            const weeklyTarget = user.target_calories_min * 7;
+
+            const foodLogs = await prisma.foodLog.findMany({
+                where: {
+                    userId: userId,
+                    date: {
+                        gte: monday,
+                        lte: sunday,
+                    },
+                },
+                select: { calories: true },
+            });
+
+            const weeklyCalories = foodLogs.reduce(
+                (sum, log) => sum + log.calories,
+                0
+            );
+
+            res.status(200).json({ weeklyCalories, weeklyTarget });
+            return;
+        } catch (error) {
+            next(error);
+            return;
         }
     },
 ];
